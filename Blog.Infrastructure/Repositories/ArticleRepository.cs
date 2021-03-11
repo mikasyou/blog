@@ -1,5 +1,5 @@
-﻿using System;
-using Blog.Domain.Article;
+﻿using Blog.Domain.Article;
+using System;
 
 namespace Blog.Infrastructure
 {
