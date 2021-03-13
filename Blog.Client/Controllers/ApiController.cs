@@ -1,22 +1,15 @@
-﻿using AyaBlog.DaoService;
-using AyaBlog.Models;
-using AyaEntity.Base;
-using Framework.Extensions.DependencyInjection;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace AyaBlog.Controllers
+namespace Blog.Client.Controllers
 {
-
-
 
   [Route("api")]
   [ApiController]
-  public class ApiBlogController : ControllerBase
+  public class BlogController : ControllerBase
   {
     BlogDbService blogService;
 

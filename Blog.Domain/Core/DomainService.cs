@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Blog.Domain.Core
 {
-    class DomainService
+    public class DomainService
     {
     }
 }
