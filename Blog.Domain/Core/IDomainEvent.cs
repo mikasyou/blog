@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 
 namespace Blog.Domain.Core
 {
-    public class DomainEntity
-    {
+    public class IDomainEvent {
     }
 }
