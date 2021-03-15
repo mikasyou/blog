@@ -1,4 +1,4 @@
-﻿namespace Blog.Domain.AggregatesModel.Aritcle {
+﻿namespace Blog.Application.Commands {
     public class CreateCommentCommand {
         public string Avatar { get; set; } = "default.png";
         public string WebSite { get; init; }

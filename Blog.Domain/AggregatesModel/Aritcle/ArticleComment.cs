@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Runtime.Serialization;
 using Blog.Domain.Core;
 
 namespace Blog.Domain.AggregatesModel.Aritcle {
@@ -23,16 +22,5 @@ namespace Blog.Domain.AggregatesModel.Aritcle {
         public string RootId { get; init; }
 
 
-        public static ArticleComment Create(CreateCommentCommand command) {
-            return new() {
-                Name = command.Name,
-                ArticleId = command.ArticleId,
-                Body = command.Body,
-                CreateDate = DateTime.Now,
-                Email = command.Email,
-                RootId = command.RootId,
-                ReplyId = command.ReplyId
-            };
-        }
     }
 }

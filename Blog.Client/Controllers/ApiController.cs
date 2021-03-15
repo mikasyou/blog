@@ -1,11 +1,10 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using System;
+﻿using System;
 using System.Security.Cryptography;
 using System.Text;
-using Blog.Application.ArticleContext;
-using Blog.Domain.CommentContext;
-using Blog.Domain.AggregatesModel.Aritcle;
+using Blog.Application.Commands;
+using Blog.Application.Services;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Blog.Client.Controllers {
     [Route("api")]
@@ -30,8 +29,10 @@ namespace Blog.Client.Controllers {
         [HttpPost("postComment")]
         public bool PostComment(CreateCommentCommand command) {
             // 设置头像
-            if (!string.IsNullOrEmpty(command.Email)) command.Avatar = GetGravatarImage(command.Email);
-            if (string.IsNullOrEmpty(command.Name.Trim())) throw new NullReferenceException("请填写一个昵称");
+            if (!string.IsNullOrEmpty(command.Email))
+                command.Avatar = GetGravatarImage(command.Email);
+            if (string.IsNullOrEmpty(command.Name.Trim()))
+                throw new NullReferenceException("请填写一个昵称");
 
             _articleService.PostComment(command);
             Response.Cookies.Append("name", command.Name, new CookieOptions { Expires = DateTime.Now.AddMonths(1) });

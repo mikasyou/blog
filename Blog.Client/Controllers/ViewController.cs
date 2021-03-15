@@ -1,18 +1,22 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
-using Blog.Application.ArticleContext;
+using Blog.Application.Commands;
+using Blog.Application.Models;
+using Blog.Application.Queries;
+using Blog.Application.Services;
 using Blog.Client.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Blog.Client.Controllers {
     public class ViewController : Controller {
-        private readonly ArticleService _articleService;
+        private readonly ArticleService articleService;
+        private readonly IArticleQueries articleQueries;
 
-        public ViewController(ArticleService articleService) {
-            _articleService = articleService;
+        public ViewController(ArticleService articleService, IArticleQueries articleQueries) {
+            this.articleService = articleService;
+            this.articleQueries = articleQueries;
         }
 
 
@@ -22,8 +26,9 @@ namespace Blog.Client.Controllers {
         /// <param name="title"></param>
         /// <param name="urlEncoded"></param>
         /// <returns></returns>
-        private static string GetTitle(string title, bool urlEncoded = false) {
-            if (urlEncoded) return WebUtility.UrlEncode(title + " | Kaakira");
+        private static string MakeWebTitle(string title, bool urlEncoded = false) {
+            if (urlEncoded)
+                return WebUtility.UrlEncode(title + " | Kaakira");
 
             return title + " | Kaakira";
         }
@@ -40,7 +45,7 @@ namespace Blog.Client.Controllers {
 
         [HttpGet("index")]
         public IActionResult Index(int pageIndex = 1, int pageSize = 10) {
-            var model = _articleService.ListArticles(pageIndex, pageSize);
+            var model = articleQueries.ListArticles(pageIndex, pageSize);
             return View("Index", model);
         }
 
@@ -48,13 +53,13 @@ namespace Blog.Client.Controllers {
         /// <summary>
         /// ajax
         /// </summary>
-        /// <param name="page"></param>
-        /// <param name="row"></param>
+        /// <param name="pageIndex"></param>
+        /// <param name="pageSize"></param>
         /// <returns></returns>
         [HttpPost("index")]
-        public IActionResult IndexAjax(int page = 1, int row = 10) {
-            var model = _articleService.ListArticles(pageIndex, pageSize);
-            HttpContext.Response.Headers.Add("title", GetTitle("首页", true));
+        public IActionResult IndexAjax(int pageIndex = 1, int pageSize = 10) {
+            var model = articleQueries.ListArticles(pageIndex, pageSize);
+            HttpContext.Response.Headers.Add("title", MakeWebTitle("首页", true));
             return PartialView("Index", model);
         }
 
@@ -65,16 +70,12 @@ namespace Blog.Client.Controllers {
         /// <param name="articleid"></param>
         /// <returns></returns>
         [HttpGet("Article/{code}/{articleid:int}")]
-        public IActionResult Article(string code, int articleid) {
-            BlogArticle model = blogService.GetArticleWithView(new { id = articleid });
-            ViewBag.Title = GetTitle(model.Title);
-
+        public IActionResult Article(ViewArticleCommand command) {
+            ArticleTO model = articleService.ViewArticle(command);
+            ViewBag.Title = MakeWebTitle(model.Title);
             ViewBag.email = Request.Cookies["email"];
             ViewBag.website = Request.Cookies["website"];
             ViewBag.name = Request.Cookies["name"];
-            model.Comments = blogService.GetArticleComments(model.Id, 1);
-            ViewBag.ArticleTag = blogService.GetSysDict("article_tag");
-
             return View("Article", model);
         }
 
@@ -86,23 +87,20 @@ namespace Blog.Client.Controllers {
         /// <param name="row"></param>
         /// <returns></returns>
         [HttpPost("Article/{articleid}")]
-        public IActionResult ArticleAjax(int articleid) {
-            BlogArticle model = blogService.GetArticleWithView(new { id = articleid });
-            HttpContext.Response.Headers.Add("title", GetTitle(model.Title, true));
-            model.Comments = blogService.GetArticleComments(model.Id, 1);
+        public IActionResult ArticleAjax(ViewArticleCommand command) {
+            ArticleTO model = articleService.ViewArticle(command);
+            ViewBag.Title = MakeWebTitle(model.Title);
             ViewBag.email = Request.Cookies["email"];
-            ViewBag.ArticleTag = blogService.GetSysDict("article_tag");
             ViewBag.website = Request.Cookies["website"];
             ViewBag.name = Request.Cookies["name"];
-
             return PartialView("Article", model);
         }
 
 
         [HttpGet("friends")]
         public IActionResult Friends(int page = 1, int row = 10) {
-            IEnumerable<BlogArticle> model = blogService.GetEntityList<BlogArticle>();
-            ViewBag.Title = GetTitle("友情链接");
+            throw new NotImplementedException();
+            ViewBag.Title = MakeWebTitle("友情链接");
             return View("Friends");
         }
 
@@ -115,7 +113,7 @@ namespace Blog.Client.Controllers {
         /// <returns></returns>
         [HttpPost("friends")]
         public IActionResult FriendsAjax() {
-            HttpContext.Response.Headers.Add("title", GetTitle("友情链接", true));
+            HttpContext.Response.Headers.Add("title", MakeWebTitle("友情链接", true));
             return PartialView("Friends");
         }
 

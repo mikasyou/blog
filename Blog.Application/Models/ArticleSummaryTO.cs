@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Blog.Domain.AggregatesModel.Aritcle;
 
 namespace Blog.Application.Models {
-    public record ArticleCommentTO(
+    public record ArticleSummaryTO(
         string Id,
         string Title,
         string SubTitle,
