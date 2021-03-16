@@ -1,5 +1,4 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.IO;
 using System.Net;
 using Blog.Application.Commands;
@@ -27,8 +26,9 @@ namespace Blog.Client.Controllers {
         /// <param name="urlEncoded"></param>
         /// <returns></returns>
         private static string MakeWebTitle(string title, bool urlEncoded = false) {
-            if (urlEncoded)
+            if (urlEncoded) {
                 return WebUtility.UrlEncode(title + " | Kaakira");
+            }
 
             return title + " | Kaakira";
         }
@@ -99,7 +99,6 @@ namespace Blog.Client.Controllers {
 
         [HttpGet("friends")]
         public IActionResult Friends(int page = 1, int row = 10) {
-            throw new NotImplementedException();
             ViewBag.Title = MakeWebTitle("友情链接");
             return View("Friends");
         }
@@ -131,8 +130,7 @@ namespace Blog.Client.Controllers {
         /// <returns></returns>
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error() {
-            return View("_Error404",
-                        new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            return View("_Error404", new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
     }
 }

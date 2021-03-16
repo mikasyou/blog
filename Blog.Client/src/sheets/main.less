@@ -1,0 +1,162 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  height: 100%;
+  margin: 0;
+  font-size: 14px;
+  padding: 0;
+  background-color: #f3f5fb;
+  font-family: Consolas, "Microsoft YaHei";
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  border: 0px;
+}
+
+// canvas背板
+#animation-board {
+  z-index: -1;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: #666;
+}
+
+.page {
+  &-wrapper {
+    position: relative;
+    min-height: 100%;
+    // 菜单
+    .page-left {
+      box-shadow: #bbb 4px 0 8px 0;
+      position: fixed;
+      padding: 0;
+      height: 100%;
+      width: 300px;
+      transition: width 0.3s ease-out;
+      // 头像+签名
+      .header-info {
+        padding: 15px 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+
+        * {
+          margin: 15px 0;
+        }
+
+        .name {
+          color: #fff;
+          font-size: 20px;
+        }
+
+        .thumb {
+          margin-top: 30px;
+          border-radius: 50%;
+          width: 90px;
+          height: 90px;
+        }
+
+        .signature {
+          color: #fff;
+          background-color: rgba(150, 150, 150, 0.1);
+          word-break: break-all;
+          white-space: pre-wrap;
+          width: 100%;
+          padding: 15px 0;
+          text-indent: 2em;
+        }
+      }
+    }
+
+    .page-right {
+      position: absolute;
+      left: 300px;
+      width: auto;
+      right: 0;
+      min-height: 100%;
+    }
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .page-wrapper {
+    .page-left {
+      width: 100%;
+      position: relative;
+      left: 0;
+      height: 100vh;
+      box-shadow: #bbb 0 0px 15px 0;
+
+      *:last-child {
+        margin-bottom: 0;
+      }
+    }
+
+    .page-right {
+      margin-top: 25px;
+      left: 0;
+      max-width: unset;
+    }
+  }
+}
+
+.menu-links {
+  background-color: rgba(150, 150, 150, 0.1);
+  padding: 15px 15px;
+
+  .fa {
+    margin-right: 5px;
+  }
+
+  .active {
+    text-shadow: 1px 1px 5px #ffa12c;
+    font-size: 20px;
+  }
+
+  .active::before {
+    content: "\f105";
+    font: normal normal normal 14px/1 FontAwesome;
+    font-size: inherit;
+    text-rendering: auto;
+  }
+
+  > div {
+    text-align: left;
+    font-size: 17px;
+    border-bottom: 0.5px solid #b2b2b2;
+    font-family: "Microsoft YaHei";
+    display: block;
+    align-items: center;
+    line-height: 33px;
+
+    &:last-child {
+      border: 0;
+    }
+
+    router {
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s ease-out;
+      color: #f7f7f6;
+    }
+
+    router:hover {
+      color: #fff56e;
+      margin-left: 5px;
+      font-size: 18px;
+      text-decoration: none;
+    }
+  }
+}
+
+
