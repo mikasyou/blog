@@ -1,0 +1,27 @@
+﻿@model PageCollection<ArticleSummaryTO>
+<div>
+    @foreach (var m in Model.Items) {
+        <article class="article-item" role="listitem">
+            <header>
+                <div class="title">
+                    <router data-href="/Article/@m.Id">@m.Title</router>
+                </div>
+                <div class="subtitle">
+                    <span>@m.SubTitle</span>
+                </div>
+                <div>
+                    @foreach (var tagName in m.Tags) {
+                        <span class="tag"><i class="fa fa-tag"></i>@tagName </span>
+                    }
+                    <span class="article-date">
+                        <i class="fa fa-calendar"></i>
+                        <time>@m.CreateDate.ToString("yyyy/MM/dd") </time>
+                    </span>
+                </div>
+            </header>
+            <figure class="subcontent article-content" role="contentinfo">
+                @Html.Raw(m.Summary)
+            </figure>
+        </article>
+    }
+</div>

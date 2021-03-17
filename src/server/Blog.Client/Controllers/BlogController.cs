@@ -1,23 +1,50 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Net;
+using System.Security.Cryptography;
+using System.Text;
 using Blog.Application.Commands;
-using Blog.Application.Models;
 using Blog.Application.Queries;
 using Blog.Application.Services;
 using Blog.Client.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Blog.Client.Controllers {
-    public class ViewController : Controller {
+    public class BlogController : Controller {
         private readonly ArticleService articleService;
         private readonly IArticleQueries articleQueries;
 
-        public ViewController(ArticleService articleService, IArticleQueries articleQueries) {
+        public BlogController(ArticleService articleService, IArticleQueries articleQueries) {
             this.articleService = articleService;
             this.articleQueries = articleQueries;
         }
 
+        private const string GravatarUrl = "https://www.gravatar.com/avatar/";
+
+        private static string GetGravatarImage(string email) {
+            var md5 = MD5.Create().ComputeHash(Encoding.Default.GetBytes(email.ToLower()));
+            var hash = BitConverter.ToString(md5).Replace("-", "").ToLower();
+            return GravatarUrl + hash;
+        }
+
+
+        [HttpPost("postComment")]
+        public bool PostComment(CreateCommentCommand command) {
+            // 设置头像
+            if (!string.IsNullOrEmpty(command.Email))
+                command.Avatar = GetGravatarImage(command.Email);
+            if (string.IsNullOrEmpty(command.Name.Trim()))
+                throw new NullReferenceException("请填写一个昵称");
+
+            articleService.PostComment(command);
+            Response.Cookies.Append("name", command.Name, new CookieOptions {Expires = DateTime.Now.AddMonths(1)});
+            Response.Cookies.Append("email", command.Email, new CookieOptions {Expires = DateTime.Now.AddMonths(1)});
+            Response.Cookies.Append("website", command.WebSite,
+                new CookieOptions {Expires = DateTime.Now.AddMonths(1)});
+            return true;
+        }
 
         /// <summary>
         /// 
@@ -26,22 +53,12 @@ namespace Blog.Client.Controllers {
         /// <param name="urlEncoded"></param>
         /// <returns></returns>
         private static string MakeWebTitle(string title, bool urlEncoded = false) {
-            if (urlEncoded) {
+            if (urlEncoded)
                 return WebUtility.UrlEncode(title + " | Kaakira");
-            }
 
             return title + " | Kaakira";
         }
 
-
-        /// <summary>
-        /// 默认路由
-        /// </summary>
-        /// <returns></returns>
-        [ActionName("index")]
-        public IActionResult DefaultIndex() {
-            return Index();
-        }
 
         [HttpGet("index")]
         public IActionResult Index(int pageIndex = 1, int pageSize = 10) {
@@ -71,7 +88,7 @@ namespace Blog.Client.Controllers {
         /// <returns></returns>
         [HttpGet("Article/{code}/{articleid:int}")]
         public IActionResult Article(ViewArticleCommand command) {
-            ArticleTO model = articleService.ViewArticle(command);
+            var model = articleService.ViewArticle(command);
             ViewBag.Title = MakeWebTitle(model.Title);
             ViewBag.email = Request.Cookies["email"];
             ViewBag.website = Request.Cookies["website"];
@@ -88,7 +105,7 @@ namespace Blog.Client.Controllers {
         /// <returns></returns>
         [HttpPost("Article/{articleid}")]
         public IActionResult ArticleAjax(ViewArticleCommand command) {
-            ArticleTO model = articleService.ViewArticle(command);
+            var model = articleService.ViewArticle(command);
             ViewBag.Title = MakeWebTitle(model.Title);
             ViewBag.email = Request.Cookies["email"];
             ViewBag.website = Request.Cookies["website"];
@@ -130,7 +147,8 @@ namespace Blog.Client.Controllers {
         /// <returns></returns>
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error() {
-            return View("_Error404", new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            return View("_Error404",
+                new ErrorViewModel {RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier});
         }
     }
 }
