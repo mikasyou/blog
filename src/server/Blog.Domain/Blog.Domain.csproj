@@ -8,4 +8,8 @@
     <Folder Include="AggregatesModel\Admin\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Blog.Domain.Shared\Blog.Domain.Shared.csproj" />
+  </ItemGroup>
+
 </Project>

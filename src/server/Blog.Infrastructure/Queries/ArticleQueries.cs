@@ -2,30 +2,31 @@
 using Blog.Application.Models;
 using Blog.Application.Queries;
 using Blog.Domain.Core;
-using Blog.Infrastructure.Repositories;
-using MongoDB.Bson;
-using MongoDB.Driver;
+using Blog.Infrastructure.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Blog.Infrastructure.Queries {
     public class ArticleQueries : IArticleQueries {
-        private readonly IMongoCollection<ArticlePO> _articles;
+        private readonly DbSet<ArticlePO> _articles;
 
-
-        public ArticleQueries(IMongoCollection<ArticlePO> articles) {
-            _articles = articles;
-
+        public ArticleQueries(BlogDbContext database) {
+            _articles = database.Articles;
         }
 
         public PageCollection<ArticleSummaryTO> ListArticles(int? offset, int? limit) {
-            var sql = _articles.Find(new BsonDocument());
+            IQueryable<ArticlePO> sql = _articles;
             if (offset != null && limit != null) {
-                sql = sql.Skip(offset).Limit(limit);
+                sql = sql.Skip(offset.Value).Take(limit.Value);
             }
 
-            var total = _articles.CountDocuments(new BsonDocument());
+            var total = _articles.Count();
             return new PageCollection<ArticleSummaryTO>(
-                sql.ToList().Select(it => new ArticleSummaryTO(it.Id, it.Title, it.SubTitle, it.Tags, "", it.CreateDate, it.UpdateDate, it.ReadCounts, it.CommentCounts)),
-                (int)total
+                sql.Select(it => new ArticleSummaryTO(
+                        it.ID, it.Title, it.SubTitle, it.Tags, it.Summary, it.CreateDate,
+                        it.UpdateDate, it.ReadCounts, it.CommentCounts
+                    ))
+                   .ToList(),
+                total
             );
         }
     }

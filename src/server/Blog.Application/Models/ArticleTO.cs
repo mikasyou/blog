@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using Blog.Domain.AggregatesModel.Aritcle;
 using Blog.Domain.Core;
+using Blog.Domain.Shared.Article;
 
 namespace Blog.Application.Models {
     public record ArticleTO(

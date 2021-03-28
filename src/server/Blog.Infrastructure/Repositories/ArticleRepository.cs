@@ -1,21 +1,20 @@
-﻿using Blog.Domain.AggregatesModel.Aritcle;
-using MongoDB.Driver;
-using System;
+﻿using System;
+using Blog.Domain.AggregatesModel.Article;
+using Blog.Infrastructure.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Blog.Infrastructure.Repositories {
     public class ArticleRepository : IArticleRepository {
-        private readonly IMongoCollection<ArticlePO> _articles;
+        private readonly DbSet<ArticlePO> _articles;
 
 
-        public ArticleRepository(IMongoDatabase database, BlogDbOptions options) {
-            _articles = database.GetCollection<ArticlePO>(options.ArticleCollectionName);
+        public ArticleRepository(BlogDbContext database, BlogDbOptions options) {
+            _articles = database.Articles;
         }
 
         public Article FindById(string articleId) {
-            var po = _articles.Find(it => it.Id == articleId).FirstOrDefault();
-            if (po == null) {
-                throw new NullReferenceException($"未找到指定文章,id:{articleId}");
-            }
+            var po = _articles.FirstOrDefaultAsync(it => it.ID == articleId).Result;
+            if (po == null) throw new NullReferenceException($"未找到指定文章，id:{articleId}");
 
             throw new NotImplementedException();
         }
