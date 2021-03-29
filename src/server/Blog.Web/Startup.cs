@@ -15,9 +15,10 @@ namespace Blog.Web {
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services) {
-            services.AddControllersWithViews();
-            var options = Configuration.GetSection(nameof(BlogDbOptions)).Get<BlogDbOptions>();
+            var options = Configuration.GetSection("Blog").Get<BlogDBOptions>();
+            services.AddBlogServices();
             services.AddPostgresContext(options);
+            services.AddControllersWithViews();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -26,7 +27,7 @@ namespace Blog.Web {
                 app.UseDeveloperExceptionPage();
             }
             else {
-                app.UseExceptionHandler("/Home/Error");
+                app.UseExceptionHandler("/Blog/Error");
                 app.UseHsts();
             }
 
@@ -36,11 +37,8 @@ namespace Blog.Web {
             app.UseRouting();
 
             app.UseAuthorization();
-
             app.UseEndpoints(endpoints => {
-                endpoints.MapControllerRoute(
-                    "default",
-                    "{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapControllers();
             });
         }
     }

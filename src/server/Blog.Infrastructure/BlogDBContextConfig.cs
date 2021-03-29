@@ -10,12 +10,12 @@ using Microsoft.Extensions.Logging;
 
 
 namespace Blog.Infrastructure {
-    public class BlogDbOptions {
+    public class BlogDBOptions {
         public string ConnectionString { get; set; }
     }
 
-    public class
-        BlogDbContext : DbContext {
+
+    public class BlogDbContext : DbContext {
         public DbSet<ArticlePO> Articles { get; set; }
         public DbSet<TagPO> Tags { get; set; }
 
@@ -34,10 +34,12 @@ namespace Blog.Infrastructure {
 
 
     public static class BlogDatabaseConfiguration {
-        public static void AddPostgresContext(this IServiceCollection services, BlogDbOptions options) {
-            services.AddDbContext<BlogDbContext>(builder => {
+        public static void AddPostgresContext(this IServiceCollection services, BlogDBOptions options) {
+            services.AddSingleton<BlogDbContext>(_ => {
+                var builder = new DbContextOptionsBuilder<BlogDbContext>();
                 builder.UseNpgsql(options.ConnectionString)
                        .UseSnakeCaseNamingConvention();
+                return new BlogDbContext(builder.Options);
             });
         }
     }

@@ -8,7 +8,7 @@ namespace Blog.Infrastructure.Repositories {
         private readonly DbSet<ArticlePO> _articles;
 
 
-        public ArticleRepository(BlogDbContext database, BlogDbOptions options) {
+        public ArticleRepository(BlogDbContext database) {
             _articles = database.Articles;
         }
 

@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Blog.Application.Models;
 using Blog.Application.Queries;
-using Blog.Domain.AggregatesModel.Article;
 using Blog.Domain.Core;
 using Blog.Domain.Shared.Article;
 using Blog.Infrastructure.Models;
@@ -21,7 +19,7 @@ namespace Blog.Infrastructure.Queries {
         }
 
 
-        private Dictionary<String, ArticleTag> ListTags() {
+        private Dictionary<string, ArticleTag> ListTags() {
             return this._tags.Select(tag => new ArticleTag(tag.ID, tag.Value)).ToDictionary(it => it.ID, it => it);
         }
 
