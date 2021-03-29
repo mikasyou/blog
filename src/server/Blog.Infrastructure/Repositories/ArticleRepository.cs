@@ -12,7 +12,7 @@ namespace Blog.Infrastructure.Repositories {
             _articles = database.Articles;
         }
 
-        public Article FindById(string articleId) {
+        public Article FindById(int articleId) {
             var po = _articles.FirstOrDefaultAsync(it => it.ID == articleId).Result;
             if (po == null) throw new NullReferenceException($"未找到指定文章，id:{articleId}");
 
@@ -23,7 +23,7 @@ namespace Blog.Infrastructure.Repositories {
             throw new NotImplementedException();
         }
 
-        public ArticleComment FindComment(string commandRootId) {
+        public ArticleComment FindComment(int commandRootId) {
             throw new NotImplementedException();
         }
     }

@@ -4,13 +4,6 @@ using Blog.Domain.Core;
 using Blog.Domain.Shared.Article;
 
 namespace Blog.Domain.AggregatesModel.Article {
-    public enum ArticleState {
-        Public,
-        Private,
-        Deleted
-    }
-
-
     public class Article : IDomainEntity {
         public string Id { get; private set; }
         public string Title { get; private set; }

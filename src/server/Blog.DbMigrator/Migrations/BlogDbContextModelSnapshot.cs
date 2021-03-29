@@ -19,34 +19,36 @@ namespace Blog.DbMigrator.Migrations
                 .HasAnnotation("ProductVersion", "5.0.4")
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-            modelBuilder.Entity("Blog.Domain.Shared.Article.ArticleTag", b =>
+            modelBuilder.Entity("ArticlePOTagPO", b =>
                 {
-                    b.Property<string>("Name")
-                        .HasColumnType("text")
-                        .HasColumnName("name");
+                    b.Property<int>("ArticlesID")
+                        .HasColumnType("integer")
+                        .HasColumnName("articles_id");
 
-                    b.Property<string>("ArticlePOID")
+                    b.Property<string>("TagsID")
                         .HasColumnType("text")
-                        .HasColumnName("article_poid");
+                        .HasColumnName("tags_id");
 
-                    b.Property<string>("Value")
-                        .HasColumnType("text")
-                        .HasColumnName("value");
-
-                    b.HasKey("Name")
+                    b.HasKey("ArticlesID", "TagsID")
                         .HasName("pk_article_tags");
 
-                    b.HasIndex("ArticlePOID")
-                        .HasDatabaseName("ix_article_tags_article_poid");
+                    b.HasIndex("TagsID")
+                        .HasDatabaseName("ix_article_tags_tags_id");
 
                     b.ToTable("article_tags");
                 });
 
             modelBuilder.Entity("Blog.Infrastructure.Models.ArticlePO", b =>
                 {
-                    b.Property<string>("ID")
-                        .HasColumnType("text")
-                        .HasColumnName("id");
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<string>("Code")
+                        .HasColumnType("varchar(256)")
+                        .HasColumnName("code");
 
                     b.Property<int>("CommentCounts")
                         .HasColumnType("integer")
@@ -69,7 +71,7 @@ namespace Blog.DbMigrator.Migrations
                         .HasColumnName("state");
 
                     b.Property<string>("SubTitle")
-                        .HasColumnType("text")
+                        .HasColumnType("varchar(1024)")
                         .HasColumnName("sub_title");
 
                     b.Property<string>("Summary")
@@ -77,7 +79,7 @@ namespace Blog.DbMigrator.Migrations
                         .HasColumnName("summary");
 
                     b.Property<string>("Title")
-                        .HasColumnType("text")
+                        .HasColumnType("varchar(512)")
                         .HasColumnName("title");
 
                     b.Property<DateTime>("UpdateDate")
@@ -90,17 +92,37 @@ namespace Blog.DbMigrator.Migrations
                     b.ToTable("articles");
                 });
 
-            modelBuilder.Entity("Blog.Domain.Shared.Article.ArticleTag", b =>
+            modelBuilder.Entity("Blog.Infrastructure.Models.TagPO", b =>
                 {
-                    b.HasOne("Blog.Infrastructure.Models.ArticlePO", null)
-                        .WithMany("Tags")
-                        .HasForeignKey("ArticlePOID")
-                        .HasConstraintName("fk_article_tags_articles_article_poid");
+                    b.Property<string>("ID")
+                        .HasColumnType("text")
+                        .HasColumnName("id");
+
+                    b.Property<string>("Value")
+                        .HasColumnType("text")
+                        .HasColumnName("value");
+
+                    b.HasKey("ID")
+                        .HasName("pk_tags");
+
+                    b.ToTable("tags");
                 });
 
-            modelBuilder.Entity("Blog.Infrastructure.Models.ArticlePO", b =>
+            modelBuilder.Entity("ArticlePOTagPO", b =>
                 {
-                    b.Navigation("Tags");
+                    b.HasOne("Blog.Infrastructure.Models.ArticlePO", null)
+                        .WithMany()
+                        .HasForeignKey("ArticlesID")
+                        .HasConstraintName("fk_article_tags_articles_articles_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Blog.Infrastructure.Models.TagPO", null)
+                        .WithMany()
+                        .HasForeignKey("TagsID")
+                        .HasConstraintName("fk_article_tags_tags_tags_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

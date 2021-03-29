@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Blog.DbMigrator.Migrations
 {
@@ -11,9 +12,11 @@ namespace Blog.DbMigrator.Migrations
                 name: "articles",
                 columns: table => new
                 {
-                    id = table.Column<string>(type: "text", nullable: false),
-                    title = table.Column<string>(type: "text", nullable: true),
-                    sub_title = table.Column<string>(type: "text", nullable: true),
+                    id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    code = table.Column<string>(type: "varchar(256)", nullable: true),
+                    title = table.Column<string>(type: "varchar(512)", nullable: true),
+                    sub_title = table.Column<string>(type: "varchar(1024)", nullable: true),
                     state = table.Column<int>(type: "integer", nullable: false),
                     summary = table.Column<string>(type: "text", nullable: true),
                     read_counts = table.Column<int>(type: "integer", nullable: false),
@@ -28,28 +31,45 @@ namespace Blog.DbMigrator.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "article_tags",
+                name: "tags",
                 columns: table => new
                 {
-                    name = table.Column<string>(type: "text", nullable: false),
-                    value = table.Column<string>(type: "text", nullable: true),
-                    article_poid = table.Column<string>(type: "text", nullable: true)
+                    id = table.Column<string>(type: "text", nullable: false),
+                    value = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("pk_article_tags", x => x.name);
+                    table.PrimaryKey("pk_tags", x => x.id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "article_tags",
+                columns: table => new
+                {
+                    articles_id = table.Column<int>(type: "integer", nullable: false),
+                    tags_id = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_article_tags", x => new { x.articles_id, x.tags_id });
                     table.ForeignKey(
-                        name: "fk_article_tags_articles_article_poid",
-                        column: x => x.article_poid,
+                        name: "fk_article_tags_articles_articles_id",
+                        column: x => x.articles_id,
                         principalTable: "articles",
                         principalColumn: "id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "fk_article_tags_tags_tags_id",
+                        column: x => x.tags_id,
+                        principalTable: "tags",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "ix_article_tags_article_poid",
+                name: "ix_article_tags_tags_id",
                 table: "article_tags",
-                column: "article_poid");
+                column: "tags_id");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -59,6 +79,9 @@ namespace Blog.DbMigrator.Migrations
 
             migrationBuilder.DropTable(
                 name: "articles");
+
+            migrationBuilder.DropTable(
+                name: "tags");
         }
     }
 }

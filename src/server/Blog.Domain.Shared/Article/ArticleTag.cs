@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Blog.Domain.Shared.Article {
+﻿namespace Blog.Domain.Shared.Article {
     public class ArticleTag {
-        public string Name { get; set; }
-        public string Value { get; set; }
+        public ArticleTag(string id, string value) {
+            ID = id;
+            Value = value;
+        }
+
+        public string ID { get; private set; }
+        public string Value { get; private set; }
     }
 }
