@@ -3,7 +3,11 @@ using Blog.Infrastructure.Repositories;
 using Microsoft.Extensions.DependencyInjection;
 using System.Collections.Generic;
 using System.Linq;
+using Blog.Application.Queries;
+using Blog.Application.Services;
+using Blog.Domain.AggregatesModel.Article;
 using Blog.Infrastructure.Models;
+using Blog.Infrastructure.Queries;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Logging;
@@ -33,13 +37,17 @@ namespace Blog.Infrastructure {
     }
 
 
-    public static class BlogDatabaseConfiguration {
+    public static class ApplicationModule {
+        public static void AddBlogServices(this IServiceCollection services) {
+            services.AddScoped<ArticleService>();
+            services.AddScoped<IArticleQueries, ArticleQueries>();
+            services.AddScoped<IArticleRepository, ArticleRepository>();
+        }
+
         public static void AddPostgresContext(this IServiceCollection services, BlogDBOptions options) {
-            services.AddSingleton<BlogDbContext>(_ => {
-                var builder = new DbContextOptionsBuilder<BlogDbContext>();
+            services.AddDbContext<BlogDbContext>(builder => {
                 builder.UseNpgsql(options.ConnectionString)
                        .UseSnakeCaseNamingConvention();
-                return new BlogDbContext(builder.Options);
             });
         }
     }

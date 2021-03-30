@@ -49,7 +49,7 @@ namespace Blog.Web.Controllers {
         [HttpGet("index")]
         public IActionResult Index(int pageIndex = 1, int pageSize = 10) {
             var model = _articleQueries.ListArticles(pageIndex, pageSize);
-            return View("Index", model);
+            return View("Index", model.Items);
         }
 
         [HttpPost("index")]
@@ -104,7 +104,8 @@ namespace Blog.Web.Controllers {
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error() {
-            return View("Error", new ErrorViewModel {RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier});
+            return View("_Error404",
+                new ErrorViewModel {RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier});
         }
     }
 }

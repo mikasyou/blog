@@ -20,7 +20,7 @@ namespace Blog.Infrastructure.Queries {
 
 
         private Dictionary<string, ArticleTag> ListTags() {
-            return this._tags.Select(tag => new ArticleTag(tag.ID, tag.Value)).ToDictionary(it => it.ID, it => it);
+            return _tags.Select(tag => new ArticleTag(tag.ID, tag.Value)).ToDictionary(it => it.ID, it => it);
         }
 
         public PageCollection<ArticleSummary> ListArticles(int? offset, int? limit) {
@@ -33,7 +33,7 @@ namespace Blog.Infrastructure.Queries {
             var tagDict = ListTags();
             return new PageCollection<ArticleSummary>(
                 sql.Select(it => new ArticleSummary(
-                        it.ID, it.Title, it.SubTitle,
+                        it.ID, it.Code, it.Title, it.SubTitle,
                         it.Tags.Select(tag => tagDict[tag.ID]).ToList(),
                         it.Summary, it.CreateDate,
                         it.UpdateDate, it.ReadCounts, it.CommentCounts

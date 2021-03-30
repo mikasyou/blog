@@ -1,47 +1,55 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Blog.Client</title>
-    <link rel="stylesheet" href="~/css/site.css" />
-</head>
-<body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Blog.Client</a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width" />
+  <meta name="description"
+        content="ACG死宅 | 菜鸡码农 | 个人博客 | 欢迎友链" />
+  <meta name="keyword" content="kaakira,.net core,web,unity,c++" />
+  <meta name="copyright" content="kaakira" />
+  <meta name="revisit-after" content="1 days" />
+  <link rel="icon" href="~/favicon.ico" />
+  <title itemprop="name">@ViewData["Title"]</title>
+  <link href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+  <link href="~/dist/app.css" rel="stylesheet" />
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2021 - Blog.Client - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    @RenderSection("Scripts", required: false)
+</head>
+
+<body class="page-wrapper">
+  
+
+  @*<div class="minimal-modal warning">
+    邮箱不能为空！
+  </div>*@
+  <nav class="page-left" id="nav-sidemenu">
+    <canvas id="animation-board"></canvas>
+    <div class="header-info">
+      <img class="thumb" src="~/images/icon.jpg" id="nav-icon" />
+      <div class="name">Kaakira</div>
+      <div class="signature"><span>这个人很懒，什么都没有写(⊙ˍ⊙)</span></div>
+    </div>
+    <menu class="menu-links" id="menu-routers">
+      <div>
+        <router data-href="/Index"><i class="fa fa-home fa-fw"></i>首页</router>
+      </div>
+      <div title="重写填坑中(lll￢ω￢)... ">
+        <router data-href=""><i class="fa fa-image fa-fw"></i>相簿</router>
+      </div>
+      <div title="重写填坑中(lll￢ω￢)... ">
+        <router data-href=""><i class="fa fa-book fa-fw"></i>归档</router>
+      </div>
+      <div title="重写填坑中(lll￢ω￢)... ">
+        <router data-href=""><i class="fa fa-lightbulb-o fa-fw"></i>实验室</router>
+      </div>
+      <div name="Friend">
+        <router data-href="/Friends"><i class="fa fa-link fa-fw"></i>友链</router>
+      </div>
+    </menu>
+  </nav>
+  <router-out id="out-put"></router-out>
+  <div class="page-right" style="opacity:1">
+    @RenderBody()
+  </div>
+  <script src="~/dist/app.js"></script>
 </body>
 </html>
