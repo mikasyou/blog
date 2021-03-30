@@ -4,20 +4,23 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin")
 const TerserPlugin = require("terser-webpack-plugin")
 
 const webpackDevServerPort = 5002
-const proxyTarget = "http://localhost:5001"
+const proxyTarget = "https://localhost:5001"
 
 module.exports = (env, options) => {
   var mode = options.mode
   var isDevelopment = mode === "development"
   return {
     devServer: {
-      compress: true,
-      contentBase: path.join(__dirname, "dist"),
-      proxy: {
-        "*": {
-          target: proxyTarget
+      contentBase: "./dist",
+      proxy: [
+        {
+          context: ["**", "!**/*.css", "!**/*.js"],
+          target: proxyTarget,
+          secure: false
         }
-      },
+      ],
+      host: "0.0.0.0",
+      hot: true,
       port: webpackDevServerPort
     },
     resolve: {

@@ -1,6 +1,7 @@
 using Blog.Infrastructure;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -35,6 +36,7 @@ namespace Blog.Web {
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseRouting();
+
 
             app.UseAuthorization();
             app.UseEndpoints(endpoints => {
