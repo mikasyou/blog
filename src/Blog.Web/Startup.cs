@@ -31,14 +31,12 @@ namespace Blog.Web {
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env) {
             if (env.IsDevelopment()) {
                 app.UseDeveloperExceptionPage();
-
-                //var options = new RewriteOptions().AddRedirect(".*\\.css", "http://localhost:5002")
-                //                                  .AddRedirect(".*\\.js", "http://localhost:5002");
-
-                //app.UseRewriter(options);
+                //app.UseStaticFiles(new StaticFileOptions {
+                //    FileProvider = new PhysicalFileProvider(Path.Combine(env.ContentRootPath, "ui/dist"))
+                //});
             }
             else {
-                app.UseExceptionHandler("/Blog/Error");
+                app.UseExceptionHandler("/Blosg/Error");
                 app.UseHsts();
             }
 
@@ -47,17 +45,16 @@ namespace Blog.Web {
             app.UseStaticFiles();
             app.UseRouting();
 
-
             app.UseAuthorization();
             app.UseEndpoints(endpoints => {
                 endpoints.MapControllers();
             });
-
-            if (env.IsDevelopment()) {
-                app.UseSpa(spa => {
-                    spa.UseProxyToSpaDevelopmentServer("http://localhost:5002");
-                });
-            }
+            // 为了前端热重载，我们从webpack-dev-server proxy到dotnet server.
+            //if (env.IsDevelopment()) {
+            //    app.UseSpa(spa => {
+            //        spa.UseProxyToSpaDevelopmentServer("http://localhost:5002");
+            //    });
+            //}
         }
     }
 }

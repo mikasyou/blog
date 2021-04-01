@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "build": "webpack --mode=production",
-    "serve": "webpack serve --inline --mode=development"
+    "serve": "webpack serve --inline --mode=development",
+    "watch": "webpack --watch --mode=development"
   },
   "devDependencies": {
     "@types/mini-css-extract-plugin": "^1.4.1",

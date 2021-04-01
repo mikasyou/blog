@@ -1,6 +1,6 @@
 ﻿namespace Blog.Application.Commands {
     public record ViewArticleCommand(
-        string articleId,
+        int articleId,
         string ip
     );
 }

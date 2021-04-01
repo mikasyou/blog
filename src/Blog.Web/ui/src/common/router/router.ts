@@ -40,8 +40,7 @@ export class Router {
       let link = <HTMLElement>e.composedPath().find(m => (<HTMLElement>m).tagName == "ROUTER")
       // 父级
       if (link != null) {
-        //if (link.tagName === 'ROUTER') {
-        console.log("click")
+        console.log("router click")
         this.notify(link.dataset.href)
       }
     })
@@ -69,7 +68,7 @@ export class Router {
   }
 
   /**
-   * 通知订阅者，页面url有变化
+   * 通知url变化
    * @param path 要跳转的页面url
    * @param history 是否为浏览历史记录 (用户通过浏览器前进后退跳转，而非超链接跳转)
    */
@@ -115,7 +114,7 @@ export class Router {
 
   private show(duration: number, render: HTMLDivElement) {
     let time = performance.now() + duration
-    let frame
+    let frame: number
     let callback = () => {
       let t = duration - (time - performance.now())
       let i = this.easeInOut(t, 0, 1, duration)
@@ -131,7 +130,7 @@ export class Router {
   }
   private hide(duration: number, render: HTMLDivElement) {
     let time = performance.now() + duration
-    let frame
+    let frame: number
     let callback = () => {
       let t = duration - (time - performance.now())
       let i = this.easeOut(t, 0, 1, duration)

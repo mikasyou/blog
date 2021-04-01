@@ -26,4 +26,10 @@
     <ProjectReference Include="..\Blog.Infrastructure\Blog.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <!-- extends watching group to include *.js files -->
+    <Watch Include="**\*.js" Exclude="node_modules\**\*;**\*.js.map;obj\**\*;bin\**\*" />
+    <Watch Include="**\*.css" Exclude="node_modules\**\*;obj\**\*;bin\**\*" />
+  </ItemGroup>
+
 </Project>

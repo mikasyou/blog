@@ -26,7 +26,7 @@ export default (env, options): Configuration => {
       port: 5002,
       proxy: [
         {
-          context: ["**", "!**/*.css", "!**/*.js"],
+          context: ["**", "!**/*.css", "!**/*.js", "/api/**"],
           target: "https://localhost:5001",
           secure: false
         }
