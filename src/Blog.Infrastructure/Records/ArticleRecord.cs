@@ -1,10 +1,13 @@
-﻿using System;
+﻿#pragma warning disable CS8618
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Blog.Domain.Shared.Articles;
+using Blog.Infrastructure.Models;
 
-namespace Blog.Infrastructure.Models {
+namespace Blog.Infrastructure.Records {
+
     /// <summary>
     /// 文章持久化模型
     /// </summary>
@@ -21,7 +24,6 @@ namespace Blog.Infrastructure.Models {
 
         [Column(TypeName = "varchar(1024)")]
         public string SubTitle { get; init; }
-
         public ArticleState State { get; init; }
         public string Summary { get; init; }
         public DateTime CreateDate { get; init; } = DateTime.Now;

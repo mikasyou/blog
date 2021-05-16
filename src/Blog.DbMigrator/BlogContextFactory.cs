@@ -4,7 +4,6 @@ using Microsoft.EntityFrameworkCore.Design;
 
 namespace Blog.DbMigrator {
     /**
-
      * 用来创建数据库
      */
     public class BlogContextFactory : IDesignTimeDbContextFactory<BlogDbContext> {

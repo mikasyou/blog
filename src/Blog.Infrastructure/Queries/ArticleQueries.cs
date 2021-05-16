@@ -5,6 +5,7 @@ using Blog.Application.Articles.Models;
 using Blog.Domain.Shared.Articles;
 using Blog.Domain.Shared.Collections;
 using Blog.Infrastructure.Models;
+using Blog.Infrastructure.Records;
 using Microsoft.EntityFrameworkCore;
 
 namespace Blog.Infrastructure.Queries {

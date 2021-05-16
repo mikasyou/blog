@@ -4,17 +4,39 @@ using Blog.Domain.Shared.Articles;
 
 namespace Blog.Application.Articles.Models {
     public class ArticleData {
-        public int Id { get; init; }
-        public string Code { get; init; }
-        public string Title { get; init; }
-        public String Content { get; init; }
-        public string Summary { get; init; }
-        public string SubTitle { get; init; }
-        public IEnumerable<ArticleTag> Tags { get; init; }
-        public DateTime CreateDate { get; init; }
-        public DateTime UpdateDate { get; init; }
-        public int ReadCounts { get; init; }
-        public List<ArticleComment> Comments { get; init; }
+        public ArticleData(
+            int id,
+            string code,
+            string title,
+            string content,
+            string subTitle,
+            IEnumerable<ArticleTag> tags,
+            DateTime createDate,
+            DateTime updateDate,
+            int readCounts,
+            List<ArticleComment> comments
+        ) {
+            Id = id;
+            Code = code;
+            Title = title;
+            Content = content;
+            SubTitle = subTitle;
+            Tags = tags;
+            CreateDate = createDate;
+            UpdateDate = updateDate;
+            ReadCounts = readCounts;
+            Comments = comments;
+        }
 
+        public int Id { get; }
+        public string Code { get; }
+        public string Title { get; }
+        public string Content { get; }
+        public string SubTitle { get; }
+        public IEnumerable<ArticleTag> Tags { get; }
+        public DateTime CreateDate { get; }
+        public DateTime UpdateDate { get; }
+        public int ReadCounts { get; }
+        public List<ArticleComment> Comments { get; }
     }
 }

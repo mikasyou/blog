@@ -4,21 +4,31 @@ using System.Linq;
 using Blog.Domain.Core;
 using Blog.Domain.Shared.Articles;
 using Blog.Domain.Shared.Exceptions;
+using Blog.Domain.Shared.Utils;
 
 namespace Blog.Domain.Articles {
     public class Article : IDomainAggragationRoot {
         public int Id { get; private set; }
         public string Title { get; private set; }
-        public IEnumerable<int> Comments { get; set; }
+        public List<int> Comments { get; set; }
         public string Content { get; private set; }
-        public int CommentCounts => Comments.Count();
+
+        public int CommentCounts => newComments.Count + Comments.Count;
+
         public int ReadCounts { get; private set; }
         public ArticleState State { get; private set; }
         public string SubTitle { get; private set; }
         public List<ArticleTag> Tags { get; private set; }
         public DateTime CreateDate { get; private set; }
-        public DateTime UpdateDate { get; private set; }
 
+        public DateTime UpdateDate { get; private set; }
+        //INSERT INTO "public"."articles"("id", "code", "title", "sub_title", "state", "summary", "read_counts", "comment_counts", "create_date", "update_date", "content") VALUES (1, 'test', '1', 'hhh', 1, 'asd', 1, 1, '2021-05-20 19:24:59', '2021-05-09 19:25:00', 'asdasd');
+
+        private List<Values.Comment> newComments = new();
+
+        public IEnumerable<Values.Comment> GetNewComments() {
+            return newComments;
+        }
 
         public Article(
             int id,
@@ -29,7 +39,7 @@ namespace Blog.Domain.Articles {
             DateTime createDate,
             DateTime updateDate,
             string content,
-            IEnumerable<int> comments
+            List<int> comments
         ) {
             Id = id;
             Title = title;
@@ -46,11 +56,30 @@ namespace Blog.Domain.Articles {
             throw new NotImplementedException();
         }
 
-        public void Comment(ArticleComment comment) {
+
+        public void Comment(
+            string webSite,
+            string name,
+            string email,
+            string body,
+            int? rootId,
+            int? targetId
+        ) {
             // 若是评论的评论，则校验要回复的评论是否存在
-            if (comment.TargetId != null && Comments.Contains(comment.TargetId.Value)) {
-                throw DomainException.Illogic($"回复的评论不存在, reply comment id: {comment.TargetId}");
+            if (targetId != null && Comments.Contains(targetId.Value)) {
+                throw DomainException.Illogical($"回复的评论不存在, reply comment id: {targetId}");
             }
+
+            var comment = new Values.Comment(
+                Name: name,
+                Avatar: DataTools.MakeGravatarImage(email),
+                WebSite: webSite,
+                Body: body,
+                Email: email,
+                RootId: rootId,
+                TargetId: targetId
+            );
+            this.newComments.Add(comment);
         }
 
         public void Delete() {

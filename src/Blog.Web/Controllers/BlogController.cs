@@ -7,8 +7,6 @@ using Blog.Domain.Shared.Articles;
 using Blog.Domain.Shared.Collections;
 using Blog.Domain.Shared.Utils;
 using Blog.Web.Controllers.ViewModels;
-using Blog.Web.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Blog.Web.Controllers {
@@ -41,30 +39,28 @@ namespace Blog.Web.Controllers {
 
 
         [Route("article/{code}/{articleId:int}")]
-        public IActionResult Article(int articleId) {
+        public IActionResult Article(int articleId, string code) {
             var command = new ViewArticleCommand(articleId, "TODO");
-            var artcile = articleService.ViewArticle(command);
+            var article = articleService.ViewArticle(command);
             var bucket = new Dictionary<int, List<ArticleComment>>();
             // 构建评论结构，方便渲染
             var postComments = new List<ArticleComment>();
-            artcile.Comments.ForEach(it => {
-                if (it.RootId != null) {
-                    if (bucket[it.RootId.Value] == null) {
-                        bucket[it.RootId.Value] = new();
+            article.Comments.ForEach(it => {
+                    if (it.RootId != null) {
+                        bucket[it.RootId.Value] ??= new List<ArticleComment>();
+
+                        bucket[it.RootId.Value].Add(it);
+                    } else {
+                        postComments.Add(it);
                     }
-                    bucket[it.RootId.Value].Add(it);
-                } else {
-                    postComments.Add(it);
                 }
-            });
+            );
 
-
-
-            ViewBag.Title = DataTools.MakeWebTitle(artcile.Title);
+            ViewBag.Title = DataTools.MakeWebTitle(article.Title);
             ViewBag.Email = Request.Cookies["email"];
             ViewBag.Website = Request.Cookies["website"];
             ViewBag.Name = Request.Cookies["name"];
-            return EnhancedView("Article", new ArticleViewModel(artcile, postComments, bucket));
+            return EnhancedView("Article", new ArticleViewModel(article, postComments, bucket));
         }
 
         [Route("links")]
@@ -85,8 +81,7 @@ namespace Blog.Web.Controllers {
         [Route("error")]
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error() {
-            return EnhancedView("_Error404",
-                new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            return EnhancedView("_Error404");
         }
     }
 }

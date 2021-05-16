@@ -1,8 +1,18 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <Nullable>enable</Nullable>
     <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Queries\**" />
+    <Compile Remove="Services\**" />
+    <EmbeddedResource Remove="Queries\**" />
+    <EmbeddedResource Remove="Services\**" />
+    <None Remove="Queries\**" />
+    <None Remove="Services\**" />
+  </ItemGroup>
 
   <ItemGroup>
     <None Include="..\.editorconfig" Link=".editorconfig" />
@@ -10,11 +20,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Blog.Domain\Blog.Domain.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Queries\" />
-    <Folder Include="Services\" />
   </ItemGroup>
 
   <ItemGroup>

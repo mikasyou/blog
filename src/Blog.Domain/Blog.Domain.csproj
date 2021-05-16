@@ -1,6 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <Nullable>enable</Nullable>
     <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
 
@@ -8,10 +9,6 @@
     <Compile Remove="AggregatesModel\**" />
     <EmbeddedResource Remove="AggregatesModel\**" />
     <None Remove="AggregatesModel\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Admin\" />
   </ItemGroup>
 
   <ItemGroup>
