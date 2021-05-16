@@ -6,7 +6,7 @@
         public string Name { get; init; }
         public string Email { get; init; }
         public string Body { get; init; }
-        public int? ReplyId { get; init; } = null;
-        public int RootId { get; init; }
+        public int? ParentId { get; init; } = null;
+        public int? RootId { get; init; }
     }
 }

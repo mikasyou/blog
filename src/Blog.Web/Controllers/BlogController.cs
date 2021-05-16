@@ -1,80 +1,73 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Net;
-using System.Runtime.InteropServices.ComTypes;
-using System.Security.Cryptography;
-using System.Text;
+using Blog.Application.Articles;
 using Blog.Application.Commands;
-using Blog.Application.Queries;
-using Blog.Application.Services;
+using Blog.Domain.Shared.Articles;
+using Blog.Domain.Shared.Collections;
 using Blog.Domain.Shared.Utils;
+using Blog.Web.Controllers.ViewModels;
 using Blog.Web.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Blog.Web.Controllers {
     public class BlogController : Controller {
-        private readonly ArticleService _articleService;
-        private readonly IArticleQueries _articleQueries;
+        private readonly ArticleService articleService;
+        private readonly IArticleQueries articleQueries;
 
         public BlogController(ArticleService articleService, IArticleQueries articleQueries) {
-            this._articleService = articleService;
-            this._articleQueries = articleQueries;
+            this.articleService = articleService;
+            this.articleQueries = articleQueries;
         }
 
 
         private IActionResult EnhancedView(string viewName, object model = null) {
-            Console.WriteLine(HttpContext.Request.Method);
-            if (HttpContext.Request.Method.ToUpper() == "POST") {
-                return PartialView(viewName, model);
-            }
-            else {
+            if (HttpContext.Request.Method.ToUpper() == "GET") {
                 return View(viewName, model);
             }
-        }
 
-        [HttpPost("postComment")]
-        public bool PostComment(CreateCommentCommand command) {
-            // 设置头像
-            if (!string.IsNullOrEmpty(command.Email)) {
-                command.Avatar = DataTools.MakeGravatarImage(command.Email);
-            }
-
-            if (string.IsNullOrEmpty(command.Name.Trim())) {
-                throw new NullReferenceException("请填写一个昵称");
-            }
-
-            _articleService.PostComment(command);
-            Response.Cookies.Append("name", command.Name, new CookieOptions {Expires = DateTime.Now.AddMonths(1)});
-            Response.Cookies.Append("email", command.Email, new CookieOptions {Expires = DateTime.Now.AddMonths(1)});
-            Response.Cookies.Append("website", command.WebSite,
-                new CookieOptions {Expires = DateTime.Now.AddMonths(1)});
-            return true;
+            return PartialView(viewName, model);
         }
 
 
         [Route("")]
         [Route("index")]
         public IActionResult Index(int pageIndex = 1, int pageSize = 10) {
-            var model = _articleQueries.ListArticles(pageIndex, pageSize);
+            var articles = articleQueries.FindArticles(PagingLimit.FromPageIndexAndSize(pageIndex, pageSize));
             HttpContext.Response.Headers.Add("title", DataTools.MakeWebTitle("首页", true));
-            return EnhancedView("Index", model.Items);
+            return EnhancedView("Index", articles.Items);
         }
 
 
         [Route("article/{code}/{articleId:int}")]
         public IActionResult Article(int articleId) {
             var command = new ViewArticleCommand(articleId, "TODO");
-            var model = _articleService.ViewArticle(command);
-            ViewBag.Title = DataTools.MakeWebTitle(model.Title);
-            ViewBag.email = Request.Cookies["email"];
-            ViewBag.website = Request.Cookies["website"];
-            ViewBag.name = Request.Cookies["name"];
-            return EnhancedView("Article", model);
+            var artcile = articleService.ViewArticle(command);
+            var bucket = new Dictionary<int, List<ArticleComment>>();
+            // 构建评论结构，方便渲染
+            var postComments = new List<ArticleComment>();
+            artcile.Comments.ForEach(it => {
+                if (it.RootId != null) {
+                    if (bucket[it.RootId.Value] == null) {
+                        bucket[it.RootId.Value] = new();
+                    }
+                    bucket[it.RootId.Value].Add(it);
+                } else {
+                    postComments.Add(it);
+                }
+            });
+
+
+
+            ViewBag.Title = DataTools.MakeWebTitle(artcile.Title);
+            ViewBag.Email = Request.Cookies["email"];
+            ViewBag.Website = Request.Cookies["website"];
+            ViewBag.Name = Request.Cookies["name"];
+            return EnhancedView("Article", new ArticleViewModel(artcile, postComments, bucket));
         }
 
-        [Route("friends")]
+        [Route("links")]
         public IActionResult Friends(int page = 1, int row = 10) {
             ViewBag.Title = DataTools.MakeWebTitle("友情链接");
             HttpContext.Response.Headers.Add("title", DataTools.MakeWebTitle("友情链接", true));
@@ -93,7 +86,7 @@ namespace Blog.Web.Controllers {
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error() {
             return EnhancedView("_Error404",
-                new ErrorViewModel {RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier});
+                new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
     }
 }

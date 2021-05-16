@@ -3,16 +3,26 @@
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <OutputType>Exe</OutputType>
+    <TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="src\**" />
-    <Content Remove="src\**" />
-    <EmbeddedResource Remove="src\**" />
-    <None Remove="src\**" />
+    <Compile Remove="Asserts\**" />
+    <Compile Remove="node_modules\**" />
+    <Compile Remove="*.ts" />
+
+    <Content Remove="Asserts\**" />
+    <Content Remove="node_modules\**" />
+    <Content Remove="*.ts" />
+
+    <None Remove="Asserts\**" />
+    <None Remove="node_modules\**" />
+    <None Remove="*.ts" />
+    
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="10.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="5.0.4" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.4">
       <PrivateAssets>all</PrivateAssets>

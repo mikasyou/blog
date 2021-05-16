@@ -1,0 +1,126 @@
+@import "./color.less";
+* {
+  box-sizing: border-box;
+}
+
+body {
+  height: 100%;
+  margin: 0;
+  font-size: 14px;
+  padding: 0;
+  background-color: #dbe2ef;
+  font-family: Consolas, "Microsoft YaHei";
+}
+
+// canvas背板
+#animation-board {
+  z-index: -1;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: #666;
+}
+
+.root-container {
+  position: relative;
+  min-height: 100%;
+  // 菜单
+  .sidemenu {
+    box-shadow: #bbb 4px 0 8px 0;
+    position: fixed;
+    padding: 0;
+    height: 100%;
+    width: 300px;
+    transition: width 0.3s ease-out;
+    // 头像+签名
+    .me-avatarts {
+      padding: 15px 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+
+      * {
+        margin: 15px 0;
+      }
+
+      .name {
+        color: @color-lesslight;
+        font-size: 20px;
+      }
+
+      .thumb {
+        margin-top: 30px;
+        border-radius: 50%;
+        width: 90px;
+        height: 90px;
+      }
+
+      .signature {
+        color: @color-lesslight;
+        margin: 0 auto;
+        word-break: break-all;
+        padding: 15px 0;
+      }
+    }
+  }
+
+  .content-container {
+    position: absolute;
+    left: 300px;
+    width: auto;
+    right: 0;
+    min-height: 100%;
+  }
+
+  .menu {
+    padding: 15px 15px;
+    .fa {
+      margin-right: 5px;
+    }
+
+    > div {
+      text-align: center;
+
+      router {
+        line-height: 33px;
+        // 调整菜单图标造成的偏移（视觉错误）
+        padding-right: 25px;
+        cursor: pointer;
+        display: inline-block;
+        text-decoration: none;
+        transition: all 0.2s ease-out;
+        color: @color-lesslight;
+      }
+
+      .active router,
+      router:hover {
+        color: @color-light;
+        transform: scale(1.1);
+        text-decoration: none;
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .root-container {
+    .sidemenu {
+      width: 100%;
+      position: relative;
+      left: 0;
+      height: 100vh;
+      box-shadow: #bbb 0 0px 15px 0;
+
+      *:last-child {
+        margin-bottom: 0;
+      }
+    }
+
+    .content-container {
+      margin-top: 25px;
+      left: 0;
+      max-width: unset;
+    }
+  }
+}

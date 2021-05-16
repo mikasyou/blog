@@ -10,7 +10,7 @@ namespace Blog.DbMigrator {
     public class BlogContextFactory : IDesignTimeDbContextFactory<BlogDbContext> {
         public BlogDbContext CreateDbContext(string[] args) {
             var builder = new DbContextOptionsBuilder<BlogDbContext>();
-            builder.UseNpgsql("Host=127.0.0.1;Port=5432;Database=blog_db;Username=postgres;Password=trust",
+            builder.UseNpgsql("Host=127.0.0.1;Port=5455;Database=blog;Username=postgres;Password=trust",
                         it => it.MigrationsAssembly("Blog.DbMigrator"))
                    .UseSnakeCaseNamingConvention();
 

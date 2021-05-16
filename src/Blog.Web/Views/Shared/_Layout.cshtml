@@ -1,49 +1,49 @@
 ﻿<!DOCTYPE html>
 <html>
+
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width" />
-    <meta name="description"
-          content="ACG死宅 | 菜鸡码农 | 个人博客 | 欢迎友链" />
+    <meta name="description" content="ACG死宅 | 菜鸡码农 | 个人博客 | 欢迎友链" />
     <meta name="keyword" content="kaakira,.net core,web,unity,c++" />
     <meta name="copyright" content="kaakira" />
     <meta name="revisit-after" content="1 days" />
     <link rel="icon" href="~/favicon.ico" />
     <title itemprop="name">@ViewData["Title"]</title>
     <link href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
-    <link href="~/site.css" rel="stylesheet" />
+    <link href="~/dist/site.css?date=@(DateTime.Now.Ticks)" rel="stylesheet" />
 </head>
 
-<body class="page-wrapper">
-    <nav class="page-left" id="nav-sidemenu">
-        <canvas id="animation-board"></canvas>
-        <div class="header-info">
-            <img class="thumb" src="~/avatar.png" id="nav-icon" />
-            <div class="name">Kaakira</div>
-            <div class="signature test"><span>这个人很懒，什么都没有写(⊙ˍ⊙)</span></div>
+<body>
+    <div>
+        <div class="root-container">
+            <nav class="sidemenu" id="nav-sidemenu">
+                <canvas id="animation-board"></canvas>
+                <div class="me-avatarts">
+                    <img class="thumb" src="~/avatar.png" id="nav-icon" />
+                    <div class="name">Kaakira</div>
+                    <div class="signature"><span>不想过只一眼就望到头的日子</span></div>
+                </div>
+                <div class="menu" id="menu-routers">
+                    <div>
+                        <router data-href="/index"><i class="fa fa-home fa-fw"></i>首页</router>
+                    </div>
+                    <div name="Friend">
+                        <router data-href="/links"><i class="fa fa-link fa-fw"></i>友链</router>
+                    </div>
+                    <div>
+                        <router data-href="/about"><i class="fa fa-lightbulb-o fa-fw"></i>关于</router>
+                    </div>
+                </div>
+            </nav>
+            <div id="root">
+                <div class="content-container" style="opacity:1">
+                    @RenderBody()
+                </div>
+            </div>
         </div>
-        <menu class="menu-links" id="menu-routers">
-            <div>
-                <router data-href="/Index"><i class="fa fa-home fa-fw"></i>首页</router>
-            </div>
-            <div title="重写填坑中(lll￢ω￢)... ">
-                <router data-href=""><i class="fa fa-image fa-fw"></i>相簿</router>
-            </div>
-            <div title="重写填坑中(lll￢ω￢)... ">
-                <router data-href=""><i class="fa fa-book fa-fw"></i>归档</router>
-            </div>
-            <div title="重写填坑中(lll￢ω￢)... ">
-                <router data-href=""><i class="fa fa-lightbulb-o fa-fw"></i>实验室</router>
-            </div>
-            <div name="Friend">
-                <router data-href="/Friends"><i class="fa fa-link fa-fw"></i>友链</router>
-            </div>
-        </menu>
-    </nav>
-    <router-out id="out-put"></router-out>
-    <div class="page-right" style="opacity:1">
-        @RenderBody()
     </div>
-    <script src="~/site.js"></script>
+    <script src="~/dist/site.js?date=@(DateTime.Now.Ticks)"></script>
 </body>
+
 </html>

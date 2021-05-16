@@ -1,46 +1,55 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Blog.Application.Models;
-using Blog.Application.Queries;
-using Blog.Domain.Core;
-using Blog.Domain.Shared.Article;
+using Blog.Application.Articles;
+using Blog.Application.Articles.Models;
+using Blog.Domain.Shared.Articles;
+using Blog.Domain.Shared.Collections;
 using Blog.Infrastructure.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Blog.Infrastructure.Queries {
     public class ArticleQueries : IArticleQueries {
-        private readonly DbSet<ArticlePO> _articles;
-        private readonly DbSet<TagPO> _tags;
+        private readonly DbSet<ArticleRecord> articles;
+        private readonly DbSet<TagRecord> tags;
 
 
         public ArticleQueries(BlogDbContext database) {
-            _tags = database.Tags;
-            _articles = database.Articles;
+            tags = database.Tags;
+            articles = database.Articles;
         }
 
 
         private Dictionary<string, ArticleTag> ListTags() {
-            return _tags.Select(tag => new ArticleTag(tag.ID, tag.Value)).ToDictionary(it => it.ID, it => it);
+            return tags.Select(tag => new ArticleTag(tag.ID, tag.Value)).ToDictionary(it => it.ID, it => it);
         }
 
-        public PageCollection<ArticleSummary> ListArticles(int? offset, int? limit) {
-            IQueryable<ArticlePO> sql = _articles;
-            if (offset != null && limit != null) {
-                sql = sql.Skip(offset.Value).Take(limit.Value);
+        public Page<ArticleIndexData> FindArticles(PagingLimit paging) {
+            IQueryable<ArticleRecord> sql = articles;
+
+            if (paging != null) {
+                sql = sql.Skip(paging.Offset).Take(paging.Limit);
             }
 
-            var total = _articles.Count();
+            var total = articles.Count();
             var tagDict = ListTags();
-            return new PageCollection<ArticleSummary>(
-                sql.Select(it => new ArticleSummary(
-                        it.ID, it.Code, it.Title, it.SubTitle,
-                        it.Tags.Select(tag => tagDict[tag.ID]).ToList(),
-                        it.Summary, it.CreateDate,
-                        it.UpdateDate, it.ReadCounts, it.CommentCounts
-                    ))
-                   .ToList(),
-                total
-            );
+            var items = sql.Select(it => new ArticleIndexData {
+                Id = it.ID,
+                Code = it.Code,
+                Title = it.Title,
+                SubTitle = it.SubTitle,
+                Summary = it.Summary,
+                Tags = it.Tags.Select(tag => tagDict[tag.ID]).ToList(),
+                ReadCounts = it.AccessCounts,
+                CommentCounts = it.CommentCounts,
+                CreateDate = it.CreateDate,
+                UpdateDate = it.UpdateDate,
+            }).ToList();
+
+            return new(items, total);
+        }
+
+        public List<ArticleComment> FindComments(int artcileId) {
+            throw new System.NotImplementedException();
         }
     }
 }

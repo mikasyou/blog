@@ -1,17 +1,11 @@
-﻿using System;
-using Blog.Infrastructure.Repositories;
-using Microsoft.Extensions.DependencyInjection;
-using System.Collections.Generic;
-using System.Linq;
-using Blog.Application.Queries;
-using Blog.Application.Services;
-using Blog.Domain.AggregatesModel.Article;
+﻿using Blog.Application.Articles;
+using Blog.Domain.Articles;
 using Blog.Infrastructure.Models;
 using Blog.Infrastructure.Queries;
+using Blog.Infrastructure.Records;
+using Blog.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Design;
-using Microsoft.Extensions.Logging;
-
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Blog.Infrastructure {
     public class BlogDBOptions {
@@ -20,8 +14,12 @@ namespace Blog.Infrastructure {
 
 
     public class BlogDbContext : DbContext {
-        public DbSet<ArticlePO> Articles { get; set; }
-        public DbSet<TagPO> Tags { get; set; }
+        public DbSet<ArticleRecord> Articles { get; set; }
+        public DbSet<TagRecord> Tags { get; set; }
+
+        public DbSet<CommentRecord> Comments { get; set; }
+        public DbSet<ArticleAccessLogRecord> ArticleAccessLogs { get; set; }
+        public DbSet<AuditRecord> Audits { get; set; }
 
         public BlogDbContext(DbContextOptions<BlogDbContext> options) : base(options) {
         }
@@ -29,7 +27,7 @@ namespace Blog.Infrastructure {
 
         protected override void OnModelCreating(ModelBuilder modelBuilder) {
             modelBuilder
-               .Entity<ArticlePO>()
+               .Entity<ArticleRecord>()
                .HasMany(p => p.Tags)
                .WithMany(p => p.Articles)
                .UsingEntity(j => j.ToTable("article_tags"));

@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace Blog.Domain.Core {
-    public class IDomainEntity {
+    public interface IDomainEntity {
+    }
+
+
+    public class IDomainAggragationRoot : IDomainEntity {
         public List<IDomainEvent> Events { get; private set; } = new();
     }
 }

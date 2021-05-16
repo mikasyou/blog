@@ -1,11 +1,13 @@
-﻿@model ArticleTO
-
+﻿@model ArticleViewModel
+@{
+    var Article = Model.Article;
+}
 <div class="aticle-catalog">
     <header class="title">
-        <h1> @Model.Title </h1>
-        <h2>@Model.SubTitle</h2>
+        <h1> @Article.Title </h1>
+        <h2>@Article.SubTitle</h2>
         <div class="tags">
-            @foreach (var tag in Model.Tags) {
+            @foreach (var tag in Article.Tags) {
                 <span class="tag">
                     <i class="fa fa-tag"></i>
                     <span>@(tag.Value) </span>
@@ -14,7 +16,7 @@
         </div>
         <div class="time">
             <i class="fa fa-calendar"></i>
-            <time>@Model.CreateDate.ToString("yyyy/MM/dd") </time>
+            <time>@Article.CreateDate.ToString("yyyy/MM/dd") </time>
         </div>
     </header>
     @*<ul class="aticle-catalog-ul">
@@ -32,7 +34,7 @@
         </ul>*@
 </div>
 <div class="article-container" role="article">
-    <section class="article-content-wrapper" role="contentinfo">@Html.Raw(Model.Content)</section>
+    <section class="article-content-wrapper" role="contentinfo">@Html.Raw(Article.Content)</section>
     <div class="minimal-comment" id="minimal-comment">
         <div id="comment-main-form" class="comment-form">
             <div class="reply-right">
@@ -43,7 +45,8 @@
                             <label class="required-text" for="txt-name">昵称</label>
                         </div>
                         <div class="minimal-group">
-                            <input autocomplete="off" id="txt-email" name="email" placeholder="" type="text" value="@ViewBag.email" />
+                            <input autocomplete="off" id="txt-email" name="email" placeholder="" type="text"
+                                   value="@ViewBag.email" />
                             <label class="required-text" for="txt-email">邮箱</label>
                         </div>
                         <div class="minimal-group">
@@ -56,13 +59,14 @@
                 <div class="reply-right-b">
                     <div class="reply-content">
                         <label class="form-label"></label>
-                        <textarea id="txt-content" class="form-text" style="resize:vertical;margin-top:8px;" rows="3"></textarea>
+                        <textarea id="txt-content" class="form-text" style="resize:vertical;margin-top:8px;"
+                                  rows="3"></textarea>
                     </div>
                 </div>
             </div>
         </div>
         <div id="comment" class="comment-floor-wrapper">
-            @foreach (ArticleCommentTO root in Model.Comments.Items) {
+            @foreach (ArticleComment root in Model.Comments) {
                 <div class="comment-floor">
                     <div class="comment-post">
                         <label class="comment-avatar"><img src="@root.Avatar"></label>
@@ -71,7 +75,7 @@
                                 <span><a href="@root.WebSite">@root.Name</a></span>
                                 <time>@root.CreateDate.ToString("yyyy/MM/dd HH:mm:ss")</time>
                             </div>
-                            <div class="comment-content">@root.Content</div>
+                            <div class="comment-content">@root.Body</div>
                             <div class="comment-body-bottom">
                                 <a role="button" class="btn-reply" data-replyid="@root.Id" data-floorid="@root.Id"
                                    data-replyname="@root.Name">回复</a>
@@ -79,7 +83,7 @@
                         </div>
                     </div>
                     @{
-                        var chills = Model.ReplyComments[root.Id];
+                        var chills = Model.ChildrenComments[root.Id];
                         if (chills != null) {
                             foreach (var reply in chills) {
                                 <div class="comment-reply">
@@ -87,10 +91,10 @@
                                     <label class="comment-avatar"><img src="@reply.Avatar"> </label>
                                     <div class="comment-body">
                                         <div class="comment-body-top">
-                                            <span><a href="@reply.WebSite">@reply.Name</a> 回复 @reply.ReplyName </span>
+                                            <span><a href="@reply.WebSite">@reply.Name</a> 回复 @reply.TargetName </span>
                                             <time>@reply.CreateDate. ToString("yyyy/MM/dd HH:mm:ss")</time>
                                         </div>
-                                        <div class="comment-content">@reply.Content</div>
+                                        <div class="comment-content">@reply.Body</div>
                                         <div class="comment-body-bottom">
                                             <a role="button" class="btn-reply" data-replyid="@reply.Id" data-floorid="@root.Id"
                                                data-replyname="@reply.Name">回复</a>
