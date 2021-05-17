@@ -1,3 +1,4 @@
+using AutoMapper;
 using Blog.Infrastructure;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -19,6 +20,10 @@ namespace Blog.Web {
             services.AddBlogServices();
             services.AddPostgresContext(options);
             services.AddControllersWithViews();
+            // Auto Mapper Configurations
+            services.AddAutoMapper(mc => {
+                mc.AddProfile(new MappingProfile());
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

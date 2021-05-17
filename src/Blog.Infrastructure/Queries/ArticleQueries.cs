@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using AutoMapper;
 using Blog.Application.Articles;
 using Blog.Application.Articles.Models;
 using Blog.Domain.Shared.Articles;
@@ -12,16 +13,17 @@ namespace Blog.Infrastructure.Queries {
     public class ArticleQueries : IArticleQueries {
         private readonly DbSet<ArticleRecord> articles;
         private readonly DbSet<TagRecord> tags;
+        private readonly Mapper mapper;
 
-
-        public ArticleQueries(BlogDbContext database) {
+        public ArticleQueries(BlogDbContext database, AutoMapper.Mapper mapper) {
             tags = database.Tags;
             articles = database.Articles;
+            this.mapper = mapper;
         }
 
 
-        private Dictionary<string, ArticleTag> ListTags() {
-            return tags.Select(tag => new ArticleTag(tag.ID, tag.Value)).ToDictionary(it => it.ID, it => it);
+        private Dictionary<string, TagRecord> ListTags() {
+            return tags.Select(p => p).ToDictionary(it => it.ID, it => it);
         }
 
         public Page<ArticleIndexData> FindArticles(PagingLimit paging) {
@@ -33,20 +35,20 @@ namespace Blog.Infrastructure.Queries {
 
             var total = articles.Count();
             var tagDict = ListTags();
-            var items = sql.Select(it => new ArticleIndexData {
-                Id = it.ID,
+            var items = sql.Select(it => new ArticleRecord {
+                Id = it.Id,
                 Code = it.Code,
                 Title = it.Title,
                 SubTitle = it.SubTitle,
                 Summary = it.Summary,
                 Tags = it.Tags.Select(tag => tagDict[tag.ID]).ToList(),
-                ReadCounts = it.AccessCounts,
+                AccessCounts = it.AccessCounts,
                 CommentCounts = it.CommentCounts,
                 CreateDate = it.CreateDate,
                 UpdateDate = it.UpdateDate,
             }).ToList();
-
-            return new(items, total);
+            var items2 = items.Select(it => this.mapper.Map<ArticleIndexData>(it));
+            return new(items2, total);
         }
 
         public List<ArticleComment> FindComments(int artcileId) {

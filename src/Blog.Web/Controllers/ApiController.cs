@@ -22,19 +22,15 @@ namespace Blog.Web.Controllers {
         [HttpPost("comment")]
         public bool PostComment(CreateCommentCommand command) {
             // TODO: 模型绑定自动校验
-            if (!string.IsNullOrWhiteSpace(command.Email)) {
-                command.Avatar = DataTools.MakeGravatarImage(command.Email);
-            }
-
             if (string.IsNullOrWhiteSpace(command.Name.Trim())) {
                 throw new NullReferenceException("请填写一个昵称");
             }
 
             _articleService.PostComment(command);
-            Response.Cookies.Append("name", command.Name, new CookieOptions {Expires = DateTime.Now.AddMonths(1)});
-            Response.Cookies.Append("email", command.Email, new CookieOptions {Expires = DateTime.Now.AddMonths(1)});
+            Response.Cookies.Append("name", command.Name, new CookieOptions { Expires = DateTime.Now.AddMonths(1) });
+            Response.Cookies.Append("email", command.Email, new CookieOptions { Expires = DateTime.Now.AddMonths(1) });
             Response.Cookies.Append("website", command.WebSite,
-                new CookieOptions {Expires = DateTime.Now.AddMonths(1)});
+                new CookieOptions { Expires = DateTime.Now.AddMonths(1) });
             return true;
         }
     }

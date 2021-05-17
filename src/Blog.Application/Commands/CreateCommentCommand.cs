@@ -1,12 +1,32 @@
 ﻿namespace Blog.Application.Commands {
     public class CreateCommentCommand {
-        public string Avatar { get; set; } = "default.png";
-        public int ArticleId { get; init; }
-        public string WebSite { get; init; }
-        public string Name { get; init; }
-        public string Email { get; init; }
-        public string Body { get; init; }
-        public int? TargetId { get; init; } = null;
-        public int? RootId { get; init; }
+        public CreateCommentCommand(
+            int articleId,
+            string webSite,
+            string name,
+            string email,
+            string body,
+            int? targetId = null,
+            int? rootId = null,
+            string avatar = "default.png"
+        ) {
+            Avatar = avatar;
+            ArticleId = articleId;
+            WebSite = webSite;
+            Name = name;
+            Email = email;
+            Body = body;
+            TargetId = targetId;
+            RootId = rootId;
+        }
+
+        public string Avatar { get; }
+        public int ArticleId { get; }
+        public string WebSite { get; }
+        public string Name { get; }
+        public string Email { get; }
+        public string Body { get; }
+        public int? TargetId { get; }
+        public int? RootId { get; }
     }
 }
