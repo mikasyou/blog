@@ -18,6 +18,7 @@ namespace Blog.Infrastructure {
             services.AddScoped<ArticleService>();
             services.AddScoped<IArticleQueries, ArticleQueries>();
             services.AddScoped<IArticleRepository, ArticleRepository>();
+            services.AddScoped<ArticleAccessService>();
         }
 
         public static void AddPostgresContext(this IServiceCollection services, BlogDBOptions options) {

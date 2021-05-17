@@ -14,7 +14,7 @@ namespace Blog.Infrastructure.Records {
     [Table("article")]
     public class ArticleRecord {
         [Key]
-        public int ID { get; init; }
+        public int Id { get; init; }
 
         [Column(TypeName = "varchar(256)")]
         public string Code { get; init; }
@@ -31,6 +31,6 @@ namespace Blog.Infrastructure.Records {
         public int AccessCounts { get; init; }
         public int CommentCounts { get; init; }
         public string Content { get; init; }
-        public ICollection<TagRecord> Tags { get; init; }
+        public List<TagRecord> Tags { get; init; }
     }
 }

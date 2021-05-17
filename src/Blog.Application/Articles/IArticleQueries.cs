@@ -6,6 +6,6 @@ using Blog.Domain.Shared.Collections;
 namespace Blog.Application.Articles {
     public interface IArticleQueries {
         public Page<ArticleIndexData> FindArticles(PagingLimit paging);
-        public List<ArticleComment> FindComments(int artcileId);
+        public List<ArticleComment> FindComments(int articleId);
     }
 }
