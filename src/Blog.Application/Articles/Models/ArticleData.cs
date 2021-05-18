@@ -13,7 +13,7 @@ namespace Blog.Application.Articles.Models {
             IEnumerable<ArticleTag> tags,
             DateTime createDate,
             DateTime updateDate,
-            int readCounts,
+            int accessCounts,
             List<ArticleComment> comments
         ) {
             Id = id;
@@ -24,7 +24,7 @@ namespace Blog.Application.Articles.Models {
             Tags = tags;
             CreateDate = createDate;
             UpdateDate = updateDate;
-            ReadCounts = readCounts;
+            AccessCounts = accessCounts;
             Comments = comments;
         }
 
@@ -36,7 +36,7 @@ namespace Blog.Application.Articles.Models {
         public IEnumerable<ArticleTag> Tags { get; }
         public DateTime CreateDate { get; }
         public DateTime UpdateDate { get; }
-        public int ReadCounts { get; }
+        public int AccessCounts { get; }
         public List<ArticleComment> Comments { get; }
     }
 }

@@ -8,7 +8,7 @@
 
         public Article AccessArticle(int articleId, string ip) {
             var article = this.articleRepository.Get(articleId);
-            this.articleRepository.Access(article.Id, ip);
+            article.Access(ip);
             return article;
         }
     }

@@ -14,36 +14,40 @@ namespace Blog.Domain.Articles {
         public string Content { get; private set; }
 
         public int CommentCounts => newComments.Count + Comments.Count;
-
-        public int ReadCounts { get; private set; }
+        public int AccessCount { get; private set; }
         public ArticleState State { get; private set; }
         public string SubTitle { get; private set; }
         public List<ArticleTag> Tags { get; private set; }
         public DateTime CreateDate { get; private set; }
 
         public DateTime UpdateDate { get; private set; }
-        //INSERT INTO "public"."articles"("id", "code", "title", "sub_title", "state", "summary", "read_counts", "comment_counts", "create_date", "update_date", "content") VALUES (1, 'test', '1', 'hhh', 1, 'asd', 1, 1, '2021-05-20 19:24:59', '2021-05-09 19:25:00', 'asdasd');
 
-        private List<Values.Comment> newComments = new();
+
+        private readonly List<Values.Comment> newComments = new();
+        private readonly List<string> newAccessLogs = new();
 
         public IEnumerable<Values.Comment> GetNewComments() {
             return newComments;
         }
 
+        public IEnumerable<string> GetNewAccessLog() {
+            return newAccessLogs;
+        }
+
         public Article(
             int id,
             string title,
-            int readCounts,
             string subTitle,
             List<ArticleTag> tags,
             DateTime createDate,
             DateTime updateDate,
             string content,
-            List<int> comments
+            List<int> comments,
+            int accessCounts
         ) {
             Id = id;
+            this.AccessCount = accessCounts;
             Title = title;
-            ReadCounts = readCounts;
             SubTitle = subTitle;
             Tags = tags;
             CreateDate = createDate;
@@ -53,7 +57,8 @@ namespace Blog.Domain.Articles {
         }
 
         public void Access(string ip) {
-            throw new NotImplementedException();
+            AccessCount++;
+            newAccessLogs.Add(ip);
         }
 
 

@@ -46,14 +46,14 @@ namespace Blog.Web.Controllers {
             // 构建评论结构，方便渲染
             var postComments = new List<ArticleComment>();
             article.Comments.ForEach(it => {
-                if (it.RootId != null) {
-                    bucket[it.RootId.Value] ??= new List<ArticleComment>();
+                    if (it.RootId != null) {
+                        bucket[it.RootId.Value] ??= new List<ArticleComment>();
 
-                    bucket[it.RootId.Value].Add(it);
-                } else {
-                    postComments.Add(it);
+                        bucket[it.RootId.Value].Add(it);
+                    } else {
+                        postComments.Add(it);
+                    }
                 }
-            }
             );
 
             ViewBag.Title = DataTools.MakeWebTitle(article.Title);

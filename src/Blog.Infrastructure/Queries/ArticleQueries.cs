@@ -15,10 +15,12 @@ namespace Blog.Infrastructure.Queries {
 
         private readonly DbSet<TagRecord> tags;
         private readonly IMapper mapper;
+        private readonly DbSet<CommentRecord> comments;
 
         public ArticleQueries(BlogDbContext database, IMapper mapper) {
             tags = database.Tags;
             articles = database.Articles;
+            comments = database.Comments;
             this.mapper = mapper;
         }
 
@@ -56,7 +58,7 @@ namespace Blog.Infrastructure.Queries {
         }
 
         public List<ArticleComment> FindComments(int articleId) {
-            throw new System.NotImplementedException();
+            return comments.Select(it => mapper.Map<ArticleComment>(it)).ToList();
         }
     }
 }

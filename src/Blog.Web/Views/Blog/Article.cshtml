@@ -83,8 +83,8 @@
                         </div>
                     </div>
                     @{
+                        if (Model.ChildrenComments.ContainsKey(root.Id)) {
                         var chills = Model.ChildrenComments[root.Id];
-                        if (chills != null) {
                             foreach (var reply in chills) {
                                 <div class="comment-reply">
                                     <a name="comment-reply-@reply.Id"></a>

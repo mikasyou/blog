@@ -6,6 +6,5 @@ namespace Blog.Domain.Articles {
         ArticleComment FindComment(int commentId);
 
         void Save(Article article);
-        void Access(int id, string ip);
     }
 }

@@ -40,6 +40,7 @@ namespace Blog.Application.Articles {
         public ArticleData ViewArticle(ViewArticleCommand command) {
             var article = articleAccessService.AccessArticle(command.articleId, "TODO");
             var comments = queries.FindComments(article.Id);
+            articleRepository.Save(article);
             return new ArticleData(
                 id: article.Id,
                 subTitle: article.SubTitle,
@@ -49,7 +50,7 @@ namespace Blog.Application.Articles {
                 content: article.Content,
                 createDate: article.CreateDate,
                 updateDate: article.UpdateDate,
-                readCounts: article.ReadCounts,
+                accessCounts: article.AccessCount,
                 comments: comments
             );
         }
