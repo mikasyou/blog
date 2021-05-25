@@ -22,7 +22,7 @@ namespace Blog.Infrastructure {
         }
 
         public static void AddPostgresContext(this IServiceCollection services, BlogDBOptions options) {
-            services.AddDbContext<BlogDbContext>(builder => {
+            services.AddDbContext<BlogDatabaseContext>(builder => {
                     builder.UseNpgsql(options.ConnectionString)
                            .UseSnakeCaseNamingConvention();
                 }

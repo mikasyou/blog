@@ -1,11 +1,11 @@
-﻿namespace Blog.Domain.Shared.Articles {
+﻿namespace Blog.Domain.Articles {
     public class ArticleTag {
         public ArticleTag(string id, string value) {
-            ID = id;
+            Id = id;
             Value = value;
         }
 
-        public string ID { get; private set; }
+        public string Id { get; private set; }
         public string Value { get; private set; }
     }
 }

@@ -1,65 +1,39 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using AutoMapper;
 using Blog.Domain.Articles;
 using Blog.Domain.Shared.Articles;
+using Blog.Infrastructure.EntityConfigurations;
 using Blog.Infrastructure.Models;
-using Blog.Infrastructure.Records;
 using Microsoft.EntityFrameworkCore;
 
 namespace Blog.Infrastructure.Repositories {
     public class ArticleRepository : IArticleRepository {
-        private readonly BlogDbContext database;
+        private readonly BlogDatabaseContext context;
         private readonly IMapper mapper;
 
-        public ArticleRepository(BlogDbContext database, IMapper mapper) {
-            this.database = database;
+        public ArticleRepository(BlogDatabaseContext context, IMapper mapper) {
+            this.context = context;
             this.mapper = mapper;
         }
 
-        public Article Get(int articleId) {
-            var po = database.Articles.FirstOrDefault(it => it.Id == articleId)
-                ?? throw new NullReferenceException($"未找到指定文章，id:{articleId}");
-            database.Entry(po).State = EntityState.Detached;
 
-            return new Article(
-                id: po.Id,
-                title: po.Title,
-                accessCounts: po.AccessCounts,
-                comments: new List<int>(),
-                content: po.Content,
-                subTitle: po.SubTitle,
-                tags: po.Tags.Select(it => new ArticleTag(it.ID, it.Value)).ToList(),
-                createDate: po.CreateDate,
-                updateDate: po.UpdateDate
-            );
+        public async Task<Article> GetAsync(int articleId) {
+            var order = await context.Articles
+                                     .Include(it => it.Comments)
+                                     .Where(o => o.Id == articleId)
+                                     .SingleOrDefaultAsync();
+            return order;
         }
 
-        public void Save(Article article) {
-            var record = mapper.Map<ArticleRecord>(article);
-            var newComments = article.GetNewComments();
-            if (newComments.Any()) {
-                var comments = mapper.Map<CommentRecord>(newComments);
-                database.Comments.AddRange(comments);
-            }
-
-            var newAccessLog = article.GetNewAccessLog();
-            if (newAccessLog.Any()) {
-                var accessLogs = newAccessLog.Select(it => new ArticleAccessLogRecord {
-                        ArticleId = article.Id,
-                        Ip = it
-                    }
-                );
-                database.ArticleAccessLogs.AddRange(accessLogs);
-            }
-
-            database.Articles.Update(record);
-            database.SaveChanges();
+        public Article Add(Article order) {
+            return context.Articles.Add(order).Entity;
         }
 
-        public ArticleComment FindComment(int commandRootId) {
-            throw new NotImplementedException();
+        public async void Save() {
+            await context.SaveEntitiesAsync();
         }
     }
 }

@@ -3,62 +3,46 @@ using System.Linq;
 using AutoMapper;
 using Blog.Application.Articles;
 using Blog.Application.Articles.Models;
+using Blog.Domain.Articles;
 using Blog.Domain.Shared.Articles;
 using Blog.Domain.Shared.Collections;
+using Blog.Infrastructure.EntityConfigurations;
 using Blog.Infrastructure.Models;
-using Blog.Infrastructure.Records;
 using Microsoft.EntityFrameworkCore;
 
 namespace Blog.Infrastructure.Queries {
     public class ArticleQueries : IArticleQueries {
-        private readonly DbSet<ArticleRecord> articles;
-
-        private readonly DbSet<TagRecord> tags;
+        private readonly BlogDatabaseContext context;
         private readonly IMapper mapper;
-        private readonly DbSet<CommentRecord> comments;
 
-        public ArticleQueries(BlogDbContext database, IMapper mapper) {
-            tags = database.Tags;
-            articles = database.Articles;
-            comments = database.Comments;
+        public ArticleQueries(BlogDatabaseContext context, IMapper mapper) {
+            this.context = context;
             this.mapper = mapper;
         }
 
 
-        private Dictionary<string, TagRecord> ListTags() {
-            return tags.Select(p => p).ToDictionary(it => it.ID, it => it);
-        }
-
         public Page<ArticleIndexData> FindArticles(PagingLimit paging) {
-            IQueryable<ArticleRecord> sql = articles;
-
+            IQueryable<Article> sql = context.Articles;
             if (paging != null) {
                 sql = sql.Skip(paging.Offset).Take(paging.Limit);
             }
 
-            var total = articles.Count();
-            var tagDict = ListTags();
-            var items = sql.Select(it => new ArticleRecord {
+            var total = context.Articles.Count();
+            var items = sql.Select(it => new ArticleIndexData {
                                     Id = it.Id,
                                     Code = it.Code,
                                     Title = it.Title,
                                     SubTitle = it.SubTitle,
                                     Summary = it.Summary,
-                                    Tags = it.Tags.Select(tag => tagDict[tag.ID]).ToList(),
-                                    AccessCounts = it.AccessCounts,
-                                    CommentCounts = it.CommentCounts,
+                                    Tags = it.Tags,
+                                    CommentCounts = it.Comments.Count,
                                     CreateDate = it.CreateDate,
                                     UpdateDate = it.UpdateDate,
                                 }
                             )
                            .ToList();
 
-            var items2 = items.Select(it => this.mapper.Map<ArticleIndexData>(it));
-            return new(items2, total);
-        }
-
-        public List<ArticleComment> FindComments(int articleId) {
-            return comments.Select(it => mapper.Map<ArticleComment>(it)).ToList();
+            return new(items, total);
         }
     }
 }

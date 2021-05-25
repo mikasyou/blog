@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Net;
+using System.Threading.Tasks;
+using AutoMapper;
 using Blog.Application.Articles.Models;
 using Blog.Application.Commands;
 using Blog.Domain.Articles;
@@ -9,23 +11,19 @@ using Blog.Domain.Shared.Utils;
 namespace Blog.Application.Articles {
     public class ArticleService {
         private readonly IArticleRepository articleRepository;
-        private readonly IArticleQueries queries;
-        private readonly ArticleAccessService articleAccessService;
+        private readonly IMapper mapper;
 
         public ArticleService(
             IArticleRepository repository,
-            IArticleQueries queries,
-            ArticleAccessService articleAccessService
+            IMapper mapper
         ) {
             this.articleRepository = repository;
-            this.queries = queries;
-            this.articleAccessService = articleAccessService;
+            this.mapper = mapper;
         }
 
 
-        public void PostComment(CreateCommentCommand command) {
-            var article = articleRepository.Get(command.ArticleId)
-                ?? throw new NullReferenceException($"文章不存在,article id: {command.ArticleId}");
+        public async Task PostComment(CreateCommentCommand command) {
+            var article = await articleRepository.GetAsync(command.ArticleId);
             article.Comment(
                 name: command.Name,
                 webSite: command.WebSite,
@@ -34,25 +32,14 @@ namespace Blog.Application.Articles {
                 rootId: command.RootId,
                 targetId: command.TargetId
             );
-            articleRepository.Save(article);
+            articleRepository.Add(article);
+            articleRepository.Save();
         }
 
-        public ArticleData ViewArticle(ViewArticleCommand command) {
-            var article = articleAccessService.AccessArticle(command.articleId, "TODO");
-            var comments = queries.FindComments(article.Id);
-            articleRepository.Save(article);
-            return new ArticleData(
-                id: article.Id,
-                subTitle: article.SubTitle,
-                code: "",
-                title: article.Title,
-                tags: article.Tags,
-                content: article.Content,
-                createDate: article.CreateDate,
-                updateDate: article.UpdateDate,
-                accessCounts: article.AccessCount,
-                comments: comments
-            );
+        public async Task<ArticleData> ViewArticle(ViewArticleCommand command) {
+            var article = await this.articleRepository.GetAsync(command.articleId);
+            article.Access("TODO-IP");
+            return mapper.Map<ArticleData>(article);
         }
     }
 }

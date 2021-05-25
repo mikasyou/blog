@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Blog.Domain.Articles;
 using Blog.Domain.Shared.Articles;
 
 namespace Blog.Application.Articles.Models {

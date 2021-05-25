@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Threading.Tasks;
 using Blog.Application.Articles;
 using Blog.Application.Commands;
+using Blog.Domain.Articles;
 using Blog.Domain.Shared.Articles;
 using Blog.Domain.Shared.Collections;
 using Blog.Domain.Shared.Utils;
@@ -39,9 +41,9 @@ namespace Blog.Web.Controllers {
 
 
         [Route("article/{code}/{articleId:int}")]
-        public IActionResult Article(int articleId, string code) {
+        public async Task<IActionResult> Article(int articleId, string code) {
             var command = new ViewArticleCommand(articleId, "TODO");
-            var article = articleService.ViewArticle(command);
+            var article = await articleService.ViewArticle(command);
             var bucket = new Dictionary<int, List<ArticleComment>>();
             // 构建评论结构，方便渲染
             var postComments = new List<ArticleComment>();
@@ -57,9 +59,9 @@ namespace Blog.Web.Controllers {
             );
 
             ViewBag.Title = DataTools.MakeWebTitle(article.Title);
-            ViewBag.Email = Request.Cookies["email"];
-            ViewBag.Website = Request.Cookies["website"];
-            ViewBag.Name = Request.Cookies["name"];
+            ViewBag.Email = Request.Cookies["email"] ?? string.Empty;
+            ViewBag.Website = Request.Cookies["website"] ?? string.Empty;
+            ViewBag.Name = Request.Cookies["name"] ?? string.Empty;
             return EnhancedView("Article", new ArticleViewModel(article, postComments, bucket));
         }
 

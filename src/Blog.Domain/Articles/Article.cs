@@ -7,58 +7,50 @@ using Blog.Domain.Shared.Exceptions;
 using Blog.Domain.Shared.Utils;
 
 namespace Blog.Domain.Articles {
-    public class Article : IDomainAggragationRoot {
-        public int Id { get; private set; }
+    public class Article : DomainEntity {
         public string Title { get; private set; }
-        public List<int> Comments { get; set; }
+        public List<ArticleComment> Comments { get; private set; }
         public string Content { get; private set; }
 
-        public int CommentCounts => newComments.Count + Comments.Count;
-        public int AccessCount { get; private set; }
+        public string Summary { get; private set; }
         public ArticleState State { get; private set; }
         public string SubTitle { get; private set; }
         public List<ArticleTag> Tags { get; private set; }
         public DateTime CreateDate { get; private set; }
-
         public DateTime UpdateDate { get; private set; }
+        public string Code { get; private set; }
 
-
-        private readonly List<Values.Comment> newComments = new();
-        private readonly List<string> newAccessLogs = new();
-
-        public IEnumerable<Values.Comment> GetNewComments() {
-            return newComments;
+        protected Article() {
+            Title = default!;
+            Comments = default!;
+            Content = default!;
+            SubTitle = default!;
+            Tags = default!;
+            Summary = default!;
+            Code = default!;
         }
 
-        public IEnumerable<string> GetNewAccessLog() {
-            return newAccessLogs;
-        }
 
         public Article(
-            int id,
             string title,
             string subTitle,
             List<ArticleTag> tags,
             DateTime createDate,
             DateTime updateDate,
             string content,
-            List<int> comments,
-            int accessCounts
+            string summary,
+            string code,
+            List<ArticleComment> comments
         ) {
-            Id = id;
-            this.AccessCount = accessCounts;
             Title = title;
             SubTitle = subTitle;
             Tags = tags;
             CreateDate = createDate;
             UpdateDate = updateDate;
             Content = content;
+            Code = code;
+            Summary = summary;
             this.Comments = comments;
-        }
-
-        public void Access(string ip) {
-            AccessCount++;
-            newAccessLogs.Add(ip);
         }
 
 
@@ -71,24 +63,28 @@ namespace Blog.Domain.Articles {
             int? targetId
         ) {
             // 若是评论的评论，则校验要回复的评论是否存在
-            if (targetId != null && Comments.Contains(targetId.Value)) {
+            if (targetId != null && Comments.All(it => it.Id != targetId.Value)) {
                 throw DomainException.Illogical($"回复的评论不存在, reply comment id: {targetId}");
             }
 
-            var comment = new Values.Comment(
-                Name: name,
-                Avatar: DataTools.MakeGravatarImage(email),
-                WebSite: webSite,
-                Body: body,
-                Email: email,
-                RootId: rootId,
-                TargetId: targetId
+            var comment = new ArticleComment(
+                name: name,
+                avatar: DataTools.MakeGravatarImage(email),
+                webSite: webSite,
+                body: body,
+                email: email,
+                rootId: rootId,
+                targetId: targetId
             );
-            this.newComments.Add(comment);
+            this.Comments.Add(comment);
         }
 
         public void Delete() {
             State = ArticleState.Deleted;
+        }
+
+        public void Access(string ip) {
+            throw new NotImplementedException();
         }
     }
 }

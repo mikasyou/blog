@@ -1,10 +1,12 @@
-﻿using Blog.Domain.Shared.Articles;
+﻿using System.Threading.Tasks;
+using Blog.Domain.Shared.Articles;
 
 namespace Blog.Domain.Articles {
     public interface IArticleRepository {
-        Article Get(int articleId);
-        ArticleComment FindComment(int commentId);
+        Task<Article> GetAsync(int articleId);
 
-        void Save(Article article);
+        Article Add(Article order);
+
+        void Save();
     }
 }

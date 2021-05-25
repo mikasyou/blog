@@ -1,4 +1,6 @@
-﻿namespace Blog.Domain.Articles {
+﻿using System.Threading.Tasks;
+
+namespace Blog.Domain.Articles {
     public class ArticleAccessService {
         private readonly IArticleRepository articleRepository;
 
@@ -6,8 +8,8 @@
             this.articleRepository = articleRepository;
         }
 
-        public Article AccessArticle(int articleId, string ip) {
-            var article = this.articleRepository.Get(articleId);
+        public async Task<Article> AccessArticle(int articleId, string ip) {
+            var article = await this.articleRepository.GetAsync(articleId);
             article.Access(ip);
             return article;
         }
