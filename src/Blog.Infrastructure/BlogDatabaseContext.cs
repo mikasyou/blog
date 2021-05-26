@@ -2,16 +2,16 @@
 using System.Threading.Tasks;
 using Blog.Domain.Articles;
 using Blog.Infrastructure.EntityConfigurations;
-using Blog.Infrastructure.Models;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 namespace Blog.Infrastructure {
     public class BlogDatabaseContext : DbContext {
         private readonly IMediator mediator;
-        public const string DEFAULT_SCHEMA = "ordering";
 
-        public DbSet<Article> Articles { get; } = default!;
+        public DbSet<Article> Articles { get; private set; } = default!;
+        public DbSet<Tag> Tags { get; private set; } = default!;
+        public DbSet<ArticleComment> ArticleComments { get; private set; } = default!;
 
 
         public BlogDatabaseContext(DbContextOptions<BlogDatabaseContext> options, IMediator mediator) : base(options) {
@@ -20,7 +20,9 @@ namespace Blog.Infrastructure {
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder) {
-            modelBuilder.ApplyConfiguration(new ArticleConfiguration());
+            modelBuilder.ApplyConfiguration(new ArticleConfiguration())
+                        .ApplyConfiguration(new ArticleCommentConfiguration())
+                        .ApplyConfiguration(new TagConfiguration());
         }
 
         public async Task<bool> SaveEntitiesAsync(CancellationToken cancellationToken = default(CancellationToken)) {

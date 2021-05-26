@@ -15,7 +15,7 @@ namespace Blog.Domain.Articles {
         public string Summary { get; private set; }
         public ArticleState State { get; private set; }
         public string SubTitle { get; private set; }
-        public List<ArticleTag> Tags { get; private set; }
+        public List<Tag> Tags { get; private set; }
         public DateTime CreateDate { get; private set; }
         public DateTime UpdateDate { get; private set; }
         public string Code { get; private set; }
@@ -34,7 +34,7 @@ namespace Blog.Domain.Articles {
         public Article(
             string title,
             string subTitle,
-            List<ArticleTag> tags,
+            List<Tag> tags,
             DateTime createDate,
             DateTime updateDate,
             string content,

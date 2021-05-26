@@ -10,7 +10,7 @@ namespace Blog.Application.Articles.Models {
         public string Title { get; init; } = default!;
         public string Summary { get; init; } = default!;
         public string SubTitle { get; init; } = default!;
-        public IEnumerable<ArticleTag> Tags { get; init; } = default!;
+        public IEnumerable<Tag> Tags { get; init; } = default!;
         public DateTime CreateDate { get; init; }
         public DateTime UpdateDate { get; init; }
         public int CommentCounts { get; init; }

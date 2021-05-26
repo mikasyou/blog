@@ -3,17 +3,17 @@ using Blog.Domain.Shared.Utils;
 
 namespace Blog.Domain.Articles {
     public class ArticleComment {
-        public int Id { get; }
-        public string Avatar { get; }
-        public string WebSite { get; }
-        public string Name { get; }
-        public string Email { get; }
-        public string Body { get; }
-        public int? TargetId { get; }
-        public string? TargetName { get; }
-        public int? RootId { get; }
+        public int Id { get; private set; }
+        public string Avatar { get; private set; }
+        public string WebSite { get; private set; }
+        public string Name { get; private set; }
+        public string Email { get; private set; }
+        public string Body { get; private set; }
+        public int? TargetId { get; private set; }
+        public string? TargetName { get; private set; }
+        public int? RootId { get; private set; }
 
-        public DateTime CreateDate { get; }
+        public DateTime CreateDate { get; private set; }
 
         // for ef core
         protected ArticleComment() {
@@ -44,7 +44,6 @@ namespace Blog.Domain.Articles {
             RootId = rootId;
             Avatar = avatar;
             CreateDate = DateTime.Now;
-            ;
         }
     }
 }
