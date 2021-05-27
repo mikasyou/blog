@@ -11,7 +11,7 @@ namespace Blog.Application.Articles.Models {
             string title,
             string content,
             string subTitle,
-            IEnumerable<ArticleTag> tags,
+            IEnumerable<Tag> tags,
             DateTime createDate,
             DateTime updateDate,
             int accessCounts,
@@ -34,7 +34,7 @@ namespace Blog.Application.Articles.Models {
         public string Title { get; }
         public string Content { get; }
         public string SubTitle { get; }
-        public IEnumerable<ArticleTag> Tags { get; }
+        public IEnumerable<Tag> Tags { get; }
         public DateTime CreateDate { get; }
         public DateTime UpdateDate { get; }
         public int AccessCounts { get; }

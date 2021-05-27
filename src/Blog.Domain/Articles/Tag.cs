@@ -1,6 +1,6 @@
 ﻿namespace Blog.Domain.Articles {
-    public class ArticleTag {
-        public ArticleTag(string id, string value) {
+    public class Tag {
+        public Tag(string id, string value) {
             Id = id;
             Value = value;
         }

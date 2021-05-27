@@ -4,9 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Blog.Domain.Articles;
-using Blog.Domain.Shared.Articles;
-using Blog.Infrastructure.EntityConfigurations;
-using Blog.Infrastructure.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Blog.Infrastructure.Repositories {

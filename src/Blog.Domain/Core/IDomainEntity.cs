@@ -7,8 +7,6 @@ namespace Blog.Domain.Core {
         public virtual int Id { get; protected set; }
 
 
-        public List<IDomainEvent> Events { get; private set; } = new();
-
         private List<INotification>? domainEvents = null;
 
         public IReadOnlyCollection<INotification>? DomainEvents => domainEvents?.AsReadOnly();

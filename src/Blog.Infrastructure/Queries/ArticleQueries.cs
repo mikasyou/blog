@@ -6,9 +6,6 @@ using Blog.Application.Articles.Models;
 using Blog.Domain.Articles;
 using Blog.Domain.Shared.Articles;
 using Blog.Domain.Shared.Collections;
-using Blog.Infrastructure.EntityConfigurations;
-using Blog.Infrastructure.Models;
-using Microsoft.EntityFrameworkCore;
 
 namespace Blog.Infrastructure.Queries {
     public class ArticleQueries : IArticleQueries {
@@ -34,14 +31,13 @@ namespace Blog.Infrastructure.Queries {
                                     Title = it.Title,
                                     SubTitle = it.SubTitle,
                                     Summary = it.Summary,
-                                    Tags = it.Tags,
+                                    Tags = it.Tags ?? new List<Tag>(),
                                     CommentCounts = it.Comments.Count,
                                     CreateDate = it.CreateDate,
                                     UpdateDate = it.UpdateDate,
                                 }
                             )
                            .ToList();
-
             return new(items, total);
         }
     }

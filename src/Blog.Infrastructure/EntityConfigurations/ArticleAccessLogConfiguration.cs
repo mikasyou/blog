@@ -7,8 +7,6 @@ namespace Blog.Infrastructure.EntityConfigurations {
     [Table("article_access_log")]
     public class ArticleAccessLogConfiguration : IEntityTypeConfiguration<ArticleAccessLog> {
         public void Configure(EntityTypeBuilder<ArticleAccessLog> configuraion) {
-            configuraion.ToTable("orderItems", BlogDatabaseContext.DEFAULT_SCHEMA);
-
             configuraion.HasKey(o => o.Id);
             configuraion.Property<int>("ArticleId")
                         .IsRequired();
